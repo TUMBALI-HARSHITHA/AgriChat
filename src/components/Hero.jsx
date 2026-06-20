@@ -88,7 +88,6 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
             ))}
           </div>
         </div>
-        </div>
       </div>
 
       {/* scroll cue */}
