@@ -58,28 +58,31 @@ export default function Home() {
 
       {/* ── Features ── */}
       <section id="features" className="py-28 sm:py-36">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-24 md:gap-y-28">
 
-          {/* section header */}
-          <div className="text-center mb-12 animate-fadeInUp">
-            <p className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-3">
-              What AgriChat offers
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
-              Everything a mountain farmer needs
-            </h2>
-            <p className="text-gray-500 text-base max-w-xl mx-auto">
-              Purpose-built for Uttarakhand's unique agri-ecosystem — from high-altitude crops to monsoon challenges.
-            </p>
-          </div>
+          {/* Header and Grid Group */}
+          <div className="flex flex-col gap-y-16">
+            {/* section header */}
+            <div className="text-center animate-fadeInUp">
+              <p className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-3">
+                What AgriChat offers
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+                Everything a mountain farmer needs
+              </h2>
+              <p className="text-gray-500 text-base max-w-xl mx-auto">
+                Purpose-built for Uttarakhand's unique agri-ecosystem — from high-altitude crops to monsoon challenges.
+              </p>
+            </div>
 
-          {/* cards grid — 1 col → 2 col → 4 col (centered) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-10 lg:gap-y-14 justify-items-center justify-center">
-            {features.map((f, i) => <Card key={i} {...f} />)}
+            {/* cards grid — 1 col → 2 col → 4 col (centered) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-10 lg:gap-y-14 justify-items-center justify-center">
+              {features.map((f, i) => <Card key={i} {...f} />)}
+            </div>
           </div>
 
           {/* CTA strip (fully centered) */}
-          <div className="mt-20 rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-8 sm:p-10 flex flex-col items-center justify-center text-center gap-6 max-w-3xl mx-auto w-full">
+          <div className="rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-8 sm:p-10 flex flex-col items-center justify-center text-center gap-6 max-w-3xl mx-auto w-full">
             <div>
               <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Ready to ask your first question?

@@ -49,10 +49,10 @@ const colorMap = {
 export default function Dashboard() {
   return (
     <div className="min-h-screen page-enter" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-20 md:gap-y-28">
 
         {/* ── Page header ── */}
-        <div className="flex flex-col items-center justify-center gap-4 mb-14 text-center">
+        <div className="flex flex-col items-center justify-center gap-4 text-center">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Dashboard</h1>
             <p className="text-gray-500 text-sm mt-1">Welcome back, Supervisor. Here's your advisory overview.</p>
@@ -64,7 +64,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 lg:gap-x-8 mb-16 justify-items-center justify-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 lg:gap-x-8 justify-items-center justify-center">
           {quickStats.map(s => (
             <div
               key={s.label}
@@ -80,8 +80,8 @@ export default function Dashboard() {
         </div>
 
         {/* ── Recent Queries ── */}
-        <div className="mb-16">
-          <div className="flex flex-col items-center justify-center text-center mb-6 gap-2">
+        <div className="flex flex-col gap-y-8">
+          <div className="flex flex-col items-center justify-center text-center gap-2">
             <h2 className="text-lg font-bold text-white flex items-center justify-center gap-2">
               <Clock size={18} className="text-green-400 shrink-0" />
               Recent Queries
