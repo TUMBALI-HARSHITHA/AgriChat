@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MessageSquareText, Leaf, TrendingUp, AlertCircle, ArrowRight, Clock } from 'lucide-react';
+import { MessageSquareText, Leaf, TrendingUp, AlertCircle, ArrowRight, Clock, Sprout } from 'lucide-react';
 import Card from '../components/Card';
 
 const recentQueries = [
@@ -49,10 +49,15 @@ const colorMap = {
 export default function Dashboard() {
   return (
     <div className="min-h-screen page-enter" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-20 md:gap-y-28">
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-14 md:gap-y-26">
 
         {/* ── Page header ── */}
-        <div className="flex flex-col items-center justify-center gap-4 text-center">
+        <div className="flex flex-col items-center justify-center gap-4 text-center w-full">
+          <div className="flex justify-center mb-1">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center glow-green shrink-0">
+              <Sprout size={28} className="text-white" />
+            </div>
+          </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Dashboard</h1>
             <p className="text-gray-500 text-sm mt-1">Welcome back, Supervisor. Here's your advisory overview.</p>
@@ -64,7 +69,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 lg:gap-x-8 justify-items-center justify-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center justify-center">
           {quickStats.map(s => (
             <div
               key={s.label}
@@ -92,7 +97,7 @@ export default function Dashboard() {
           </div>
 
           {/* cards — 1 col → 3 col (centered) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-12 md:gap-x-10 justify-items-center justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 md:gap-10 justify-items-center justify-center">
             {recentQueries.map((q, i) => <Card key={i} {...q} />)}
           </div>
         </div>

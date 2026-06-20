@@ -58,10 +58,10 @@ export default function Home() {
 
       {/* ── Features ── */}
       <section id="features" className="py-28 sm:py-36">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-24 md:gap-y-28">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-14 md:gap-y-26">
 
           {/* Header and Grid Group */}
-          <div className="flex flex-col gap-y-16">
+          <div className="flex flex-col gap-y-12">
             {/* section header */}
             <div className="text-center animate-fadeInUp">
               <p className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-3">
@@ -76,7 +76,7 @@ export default function Home() {
             </div>
 
             {/* cards grid — 1 col → 2 col → 4 col (centered) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-10 lg:gap-y-14 justify-items-center justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 justify-items-center justify-center">
               {features.map((f, i) => <Card key={i} {...f} />)}
             </div>
           </div>
