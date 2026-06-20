@@ -49,7 +49,7 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
           </h1>
 
           {/* sub */}
-          <p className="text-base sm:text-lg text-gray-400 leading-relaxed max-w-2xl animate-fadeInUp delay-200">
+          <p className="text-base sm:text-lg text-gray-400 leading-relaxed max-w-2xl mx-auto animate-fadeInUp delay-200">
             {subheadline ??
               "Ask any farming question in plain language. Get instant, practical guidance tailored to Uttarakhand's mountain crops — from disease diagnosis to seasonal planting."}
           </p>
