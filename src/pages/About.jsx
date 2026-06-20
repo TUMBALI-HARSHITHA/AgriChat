@@ -73,7 +73,7 @@ export default function About() {
         </div>
 
         {/* ── Mission ── */}
-        <div className="glass rounded-2xl p-6 sm:p-8 mb-16 border border-green-900/30 text-center max-w-3xl mx-auto">
+        <div className="glass rounded-2xl p-6 sm:p-8 mb-16 border border-green-900/30 text-center max-w-4xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Our Mission</h2>
           <p className="text-gray-400 leading-relaxed">
             Uttarakhand's mountain agriculture faces unique challenges — steep terrain, erratic rainfall,
@@ -94,7 +94,7 @@ export default function About() {
           {values.map(v => (
             <div
               key={v.title}
-              className="flex flex-col items-center text-center gap-4 p-5 rounded-xl bg-[#111a11] border border-green-900/20 hover:border-green-700/30 transition-colors w-full max-w-md"
+              className="flex flex-col items-center text-center gap-4 p-5 rounded-xl bg-[#111a11] border border-green-900/20 hover:border-green-700/30 transition-colors w-full"
             >
               <div className="w-10 h-10 rounded-xl bg-green-900/40 border border-green-700/20 flex items-center justify-center text-green-400 shrink-0">
                 {v.icon}
@@ -108,7 +108,7 @@ export default function About() {
         </div>
 
         {/* ── Disclaimer ── */}
-        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-16 text-center max-w-3xl mx-auto">
+        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-16 text-center max-w-4xl mx-auto">
           <h3 className="text-base font-bold text-amber-400 mb-2">⚠️ Important Disclaimer</h3>
           <p className="text-sm text-amber-500/80 leading-relaxed">
             All responses provided by AgriChat are AI-generated and intended for informational purposes
