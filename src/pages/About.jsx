@@ -56,7 +56,7 @@ const values = [
 export default function About() {
   return (
     <div className="min-h-screen w-full page-enter flex flex-col items-center" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
-      <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center gap-y-24 md:gap-y-32">
+      <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center gap-y-14 md:gap-y-28">
 
         {/* ── Page header ── */}
         <div className="text-center flex flex-col items-center w-full">
@@ -86,14 +86,14 @@ export default function About() {
         </div>
 
         {/* ── Cards ── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 w-full justify-items-center justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 lg:gap-14 w-full justify-items-center justify-center">
           {teamCards.map((c, i) => <Card key={i} {...c} />)}
         </div>
 
         {/* ── Core Principles ── */}
         <div className="w-full flex flex-col items-center">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-12 text-center">Core Principles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 w-full justify-items-center justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 lg:gap-14 w-full justify-items-center justify-center">
             {values.map(v => (
               <div
                 key={v.title}

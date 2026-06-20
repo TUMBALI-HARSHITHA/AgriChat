@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MessageSquareText, ArrowRight, Leaf, Shield, Zap } from 'lucide-react';
+import { MessageSquareText, ArrowRight, Leaf, Shield, Zap, Sprout } from 'lucide-react';
 
 const stats = [
   { icon: <Leaf  size={15} />, label: 'Mountain Crops', value: '50+' },
@@ -30,6 +30,13 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
 
         {/* ── Text Content Block ── */}
         <div className="flex flex-col items-center gap-6 max-w-3xl">
+
+          {/* leaf logo box */}
+          <div className="flex justify-center mb-1 animate-fadeInUp">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center glow-green shrink-0">
+              <Sprout size={28} className="text-white" />
+            </div>
+          </div>
 
           {/* badge */}
           <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-900/40 border border-green-700/30 text-green-400 text-xs font-semibold uppercase tracking-wider animate-fadeInUp">
