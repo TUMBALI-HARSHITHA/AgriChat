@@ -20,7 +20,7 @@ export default function Navbar() {
       style={{ height: '64px' }}
     >
       {/* ── inner container ── */}
-      <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto h-full px-6 sm:px-10 lg:px-16 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="AgriChat home">

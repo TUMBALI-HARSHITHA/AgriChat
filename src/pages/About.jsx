@@ -55,8 +55,8 @@ const values = [
 
 export default function About() {
   return (
-    <div className="min-h-screen page-enter" style={{ paddingTop: '96px', paddingBottom: '64px' }}>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen page-enter" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
+      <div className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16">
 
         {/* ── Page header ── */}
         <div className="text-center mb-14">
@@ -73,7 +73,7 @@ export default function About() {
         </div>
 
         {/* ── Mission ── */}
-        <div className="glass rounded-2xl p-6 sm:p-8 mb-12 border border-green-900/30 text-center sm:text-left">
+        <div className="glass rounded-2xl p-6 sm:p-8 mb-16 border border-green-900/30 text-center sm:text-left">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Our Mission</h2>
           <p className="text-gray-400 leading-relaxed">
             Uttarakhand's mountain agriculture faces unique challenges — steep terrain, erratic rainfall,
@@ -84,13 +84,13 @@ export default function About() {
         </div>
 
         {/* ── Cards ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-20">
           {teamCards.map((c, i) => <Card key={i} {...c} />)}
         </div>
 
         {/* ── Core Principles ── */}
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-6">Core Principles</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-14">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-8">Core Principles</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-20">
           {values.map(v => (
             <div
               key={v.title}
@@ -108,7 +108,7 @@ export default function About() {
         </div>
 
         {/* ── Disclaimer ── */}
-        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-12 text-center sm:text-left">
+        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-16 text-center sm:text-left">
           <h3 className="text-base font-bold text-amber-400 mb-2">⚠️ Important Disclaimer</h3>
           <p className="text-sm text-amber-500/80 leading-relaxed">
             All responses provided by AgriChat are AI-generated and intended for informational purposes
