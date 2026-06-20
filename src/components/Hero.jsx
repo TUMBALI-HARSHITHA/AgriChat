@@ -88,62 +88,6 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
             ))}
           </div>
         </div>
-
-        {/* ── Highlighted Chat Preview ── */}
-        <div className="w-full flex justify-center items-center animate-fadeInUp delay-300">
-          <div className="relative animate-float w-full max-w-[340px] px-2">
-
-            {/* card */}
-            <div className="glass rounded-3xl p-6 w-full glow-green">
-
-              {/* header */}
-              <div className="flex items-center gap-3 mb-5 text-left">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shrink-0">
-                  <MessageSquareText size={15} className="text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-white">AgriChat AI</p>
-                  <p className="text-xs text-green-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-                    Online
-                  </p>
-                </div>
-              </div>
-
-              {/* user bubble */}
-              <div className="mb-4 text-left">
-                <div className="chat-bubble-user px-4 py-2.5 text-sm text-white ml-10">
-                  My beans have yellow spots. What should I do?
-                </div>
-                <p className="text-xs text-gray-600 text-right mt-1">Supervisor</p>
-              </div>
-
-              {/* ai bubble */}
-              <div className="mb-4 text-left">
-                <div className="chat-bubble-ai px-4 py-2.5 text-sm text-gray-200 mr-10">
-                  Yellow spots may indicate{' '}
-                  <span className="text-green-400 font-medium">bean rust</span> or nutrient
-                  deficiency. Try a copper-based fungicide spray…
-                </div>
-                <p className="text-xs text-gray-600 mt-1 ml-1">AgriChat AI</p>
-              </div>
-
-              {/* disclaimer chip */}
-              <div className="p-2.5 rounded-xl bg-amber-900/20 border border-amber-800/20 text-left">
-                <p className="text-xs text-amber-400/80 leading-relaxed">
-                  ⚠️ Verify with a licensed extension officer before applying.
-                </p>
-              </div>
-            </div>
-
-            {/* floating tags */}
-            <div className="absolute -top-4 -right-4 glass rounded-2xl px-3 py-1.5 text-xs font-semibold text-green-300 border border-green-600/30 whitespace-nowrap">
-              🌿 Uttarakhand Crops
-            </div>
-            <div className="absolute -bottom-4 -left-4 glass rounded-2xl px-3 py-1.5 text-xs font-semibold text-amber-300 border border-amber-700/30 whitespace-nowrap">
-              🤖 Gemini AI
-            </div>
-          </div>
         </div>
       </div>
 
