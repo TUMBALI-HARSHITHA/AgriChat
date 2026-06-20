@@ -75,7 +75,7 @@ export default function Card({
       )}
 
       {/* body */}
-      <div className="flex flex-col flex-1 gap-3 p-5 items-center text-center">
+      <div className="flex flex-col flex-1 gap-4 p-6 sm:p-8 items-center text-center">
         {/* tag */}
         {tag && (
           <span className={`self-center text-xs font-semibold px-2.5 py-1 rounded-full border ${tagColors[tagColor] ?? tagColors.green}`}>
