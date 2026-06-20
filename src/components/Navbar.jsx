@@ -7,6 +7,7 @@ const navLinks = [
   { label: 'Chat', path: '/chat' },
   { label: 'Dashboard', path: '/dashboard' },
   { label: 'About', path: '/about' },
+  { label: 'Login', path: '/login' },
 ];
 
 export default function Navbar() {
