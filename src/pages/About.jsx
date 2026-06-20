@@ -59,7 +59,7 @@ export default function About() {
       <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center">
 
         {/* ── Page header ── */}
-        <div className="text-center mb-14 flex flex-col items-center w-full">
+        <div className="text-center mb-20 flex flex-col items-center w-full">
           <div className="flex justify-center mb-5">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center glow-green shrink-0">
               <Sprout size={28} className="text-white" />
@@ -75,7 +75,7 @@ export default function About() {
         </div>
 
         {/* ── Mission ── */}
-        <div className="glass rounded-2xl p-6 sm:p-8 mb-16 border border-green-900/30 text-center w-full max-w-4xl">
+        <div className="glass rounded-2xl p-6 sm:p-8 mb-24 border border-green-900/30 text-center w-full max-w-4xl">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Our Mission</h2>
           <p className="text-gray-400 leading-relaxed">
             Uttarakhand's mountain agriculture faces unique challenges — steep terrain, erratic rainfall,
@@ -86,13 +86,13 @@ export default function About() {
         </div>
 
         {/* ── Cards ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-20 w-full justify-items-center justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 mb-28 w-full justify-items-center justify-center">
           {teamCards.map((c, i) => <Card key={i} {...c} />)}
         </div>
 
         {/* ── Core Principles ── */}
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-8 text-center">Core Principles</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-20 w-full justify-items-center justify-center">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-12 text-center">Core Principles</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-28 w-full justify-items-center justify-center">
           {values.map(v => (
             <div
               key={v.title}
@@ -110,7 +110,7 @@ export default function About() {
         </div>
 
         {/* ── Disclaimer ── */}
-        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-16 text-center w-full max-w-4xl mx-auto">
+        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-24 text-center w-full max-w-4xl mx-auto">
           <h3 className="text-base font-bold text-amber-400 mb-2">⚠️ Important Disclaimer</h3>
           <p className="text-sm text-amber-500/80 leading-relaxed">
             All responses provided by AgriChat are AI-generated and intended for informational purposes
