@@ -47,7 +47,7 @@ export default function Footer() {
               </span>
             </Link>
 
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-5">
+            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-5 mx-auto sm:mx-0">
               AI-powered agricultural advisory for Uttarakhand's mountain farmers. Get practical crop guidance in plain language.
             </p>
 

@@ -104,7 +104,7 @@ export default function Dashboard() {
             <h3 className="text-base font-bold text-white mb-2">
               Monsoon retreat — protect stored grains from humidity
             </h3>
-            <p className="text-sm text-gray-500 max-w-md">
+            <p className="text-sm text-gray-500 max-w-md mx-auto">
               Post-Kharif storage: ensure moisture content below 12% for wheat and rajma before bagging.
             </p>
           </div>
