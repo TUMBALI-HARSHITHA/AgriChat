@@ -30,7 +30,7 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
         <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
 
           {/* ── LEFT ── */}
-          <div className="flex flex-col items-start gap-6">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 max-w-xl mx-auto lg:mx-0">
 
             {/* badge */}
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-900/40 border border-green-700/30 text-green-400 text-xs font-semibold uppercase tracking-wider animate-fadeInUp">
@@ -56,7 +56,7 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-3 animate-fadeInUp delay-300">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-3 animate-fadeInUp delay-300">
               <Link to={ctaLink ?? '/chat'} className="btn-primary">
                 <MessageSquareText size={17} />
                 {ctaText ?? 'Start Chatting'}
@@ -68,13 +68,13 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
             </div>
 
             {/* stats */}
-            <div className="flex flex-wrap gap-6 pt-2 animate-fadeInUp delay-400">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-6 pt-2 animate-fadeInUp delay-400">
               {stats.map(s => (
                 <div key={s.label} className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-green-900/50 border border-green-700/30 flex items-center justify-center text-green-400 shrink-0">
                     {s.icon}
                   </div>
-                  <div>
+                  <div className="text-left">
                     <p className="text-base font-bold text-white leading-none">{s.value}</p>
                     <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
                   </div>

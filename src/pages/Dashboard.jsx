@@ -52,12 +52,12 @@ export default function Dashboard() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── Page header ── */}
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-10">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 mb-10 text-center sm:text-left">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Dashboard</h1>
             <p className="text-gray-500 text-sm mt-1">Welcome back, Supervisor. Here's your advisory overview.</p>
           </div>
-          <Link to="/chat" className="btn-primary">
+          <Link to="/chat" className="btn-primary shrink-0">
             <MessageSquareText size={16} />
             New Query
           </Link>
@@ -98,8 +98,8 @@ export default function Dashboard() {
         </div>
 
         {/* ── Tip strip ── */}
-        <div className="rounded-2xl bg-gradient-to-r from-green-900/30 to-[#111a11] border border-green-700/20 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-          <div>
+        <div className="rounded-2xl bg-gradient-to-r from-green-900/30 to-[#111a11] border border-green-700/20 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+          <div className="flex flex-col items-center sm:items-start">
             <p className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">💡 Seasonal Tip</p>
             <h3 className="text-base font-bold text-white mb-1">
               Monsoon retreat — protect stored grains from humidity

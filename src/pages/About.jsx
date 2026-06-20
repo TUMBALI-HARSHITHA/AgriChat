@@ -73,7 +73,7 @@ export default function About() {
         </div>
 
         {/* ── Mission ── */}
-        <div className="glass rounded-2xl p-6 sm:p-8 mb-12 border border-green-900/30">
+        <div className="glass rounded-2xl p-6 sm:p-8 mb-12 border border-green-900/30 text-center sm:text-left">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Our Mission</h2>
           <p className="text-gray-400 leading-relaxed">
             Uttarakhand's mountain agriculture faces unique challenges — steep terrain, erratic rainfall,
@@ -108,7 +108,7 @@ export default function About() {
         </div>
 
         {/* ── Disclaimer ── */}
-        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-12">
+        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-12 text-center sm:text-left">
           <h3 className="text-base font-bold text-amber-400 mb-2">⚠️ Important Disclaimer</h3>
           <p className="text-sm text-amber-500/80 leading-relaxed">
             All responses provided by AgriChat are AI-generated and intended for informational purposes

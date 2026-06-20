@@ -37,7 +37,7 @@ export default function Footer() {
         <div className="py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
 
           {/* brand */}
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-2 flex flex-col items-center sm:items-start text-center sm:text-left">
             <Link to="/" className="inline-flex items-center gap-2.5 mb-4 group">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <Sprout size={18} className="text-white" />
@@ -51,7 +51,7 @@ export default function Footer() {
               AI-powered agricultural advisory for Uttarakhand's mountain farmers. Get practical crop guidance in plain language.
             </p>
 
-            <div className="rounded-xl bg-amber-900/10 border border-amber-800/20 p-3">
+            <div className="rounded-xl bg-amber-900/10 border border-amber-800/20 p-3 max-w-xs sm:max-w-none mx-auto sm:mx-0">
               <p className="text-xs text-amber-500/80 leading-relaxed">
                 <strong className="text-amber-400">Disclaimer:</strong>{' '}
                 All responses are AI-generated. Always verify with a licensed agricultural extension officer.
@@ -61,7 +61,7 @@ export default function Footer() {
 
           {/* link columns */}
           {Object.entries(NAV).map(([section, links]) => (
-            <div key={section}>
+            <div key={section} className="text-center sm:text-left">
               <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-4">
                 {section}
               </h4>
