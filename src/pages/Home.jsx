@@ -57,8 +57,8 @@ export default function Home() {
       <Hero />
 
       {/* ── Features ── */}
-      <section id="features" className="py-28 sm:py-36">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-14 md:gap-y-26">
+      <section id="features" className="py-28 sm:py-36 flex flex-col items-center w-full">
+        <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center gap-y-14 md:gap-y-28">
 
           {/* Header and Grid Group */}
           <div className="flex flex-col gap-y-12">
