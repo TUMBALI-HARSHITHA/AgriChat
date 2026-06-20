@@ -53,7 +53,7 @@ export default function Card({
   return (
     <div
       className={[
-        'group flex flex-col rounded-2xl border overflow-hidden',
+        'group flex flex-col rounded-2xl border overflow-hidden w-full',
         'transition-all duration-300 hover:-translate-y-1',
         variantClass[variant] ?? variantClass.default,
       ].join(' ')}
