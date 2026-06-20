@@ -57,8 +57,8 @@ export default function Home() {
       <Hero />
 
       {/* ── Features ── */}
-      <section id="features" className="py-20 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="features" className="py-28 sm:py-36">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
 
           {/* section header */}
           <div className="text-center mb-12 animate-fadeInUp">
@@ -79,7 +79,7 @@ export default function Home() {
           </div>
 
           {/* CTA strip */}
-          <div className="mt-12 rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+          <div className="mt-20 rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
                 Ready to ask your first question?

@@ -21,7 +21,7 @@ export default function Login() {
   return (
     /* full-viewport centred layout, offset for fixed navbar */
     <div
-      className="min-h-screen hero-bg flex items-center justify-center px-4 py-12"
+      className="min-h-screen hero-bg flex items-center justify-center px-6 py-12"
       style={{ paddingTop: 'calc(64px + 2rem)' }}
     >
       {/* decorative orbs */}

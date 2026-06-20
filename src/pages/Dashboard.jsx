@@ -48,11 +48,11 @@ const colorMap = {
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen page-enter" style={{ paddingTop: '96px', paddingBottom: '64px' }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen page-enter" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
 
         {/* ── Page header ── */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 mb-10 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 mb-14 text-center sm:text-left">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Dashboard</h1>
             <p className="text-gray-500 text-sm mt-1">Welcome back, Supervisor. Here's your advisory overview.</p>
@@ -64,7 +64,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
           {quickStats.map(s => (
             <div
               key={s.label}
@@ -80,7 +80,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Recent Queries ── */}
-        <div className="mb-10">
+        <div className="mb-16">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-bold text-white flex items-center gap-2">
               <Clock size={18} className="text-green-400 shrink-0" />
