@@ -25,7 +25,7 @@ const teamCards = [
     tagColor: 'purple',
     title: 'Uttarakhand Focus',
     description:
-      'Tailored specifically for mountain crops, altitude zones, and Uttarakhand's local growing conditions.',
+      "Tailored specifically for mountain crops, altitude zones, and Uttarakhand's local growing conditions.",
     variant: 'highlight',
   },
 ];
