@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Sprout, Github, Twitter, Linkedin, Mail, Heart } from 'lucide-react';
+import { Sprout, Code2, Twitter, Linkedin, Mail, Heart } from 'lucide-react';
 
 const footerLinks = {
   Product: [
@@ -20,7 +20,7 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: <Github size={16} />, href: '#', label: 'GitHub' },
+  { icon: <Code2 size={16} />, href: '#', label: 'GitHub' },
   { icon: <Twitter size={16} />, href: '#', label: 'Twitter/X' },
   { icon: <Linkedin size={16} />, href: '#', label: 'LinkedIn' },
   { icon: <Mail size={16} />, href: 'mailto:hello@agrichat.in', label: 'Email' },
