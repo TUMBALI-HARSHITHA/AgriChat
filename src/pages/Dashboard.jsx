@@ -48,8 +48,8 @@ const colorMap = {
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen page-enter" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col gap-y-14 md:gap-y-26">
+    <div className="min-h-screen w-full page-enter flex flex-col items-center" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
+      <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center gap-y-14 md:gap-y-28">
 
         {/* ── Page header ── */}
         <div className="flex flex-col items-center justify-center gap-4 text-center w-full">
