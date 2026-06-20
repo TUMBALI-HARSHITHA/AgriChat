@@ -32,7 +32,7 @@ const features = [
     tagColor: 'blue',
     title: 'Weather & Seasonal Planning',
     description:
-      'Get context-aware advice based on Uttarakhand's Kharif and Rabi seasons, altitude zones, and local climate patterns.',
+      "Get context-aware advice based on Uttarakhand's Kharif and Rabi seasons, altitude zones, and local climate patterns.",
     actionLabel: 'Explore',
     actionLink: '/chat',
     variant: 'default',

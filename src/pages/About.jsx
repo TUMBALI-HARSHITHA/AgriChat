@@ -51,7 +51,7 @@ const values = [
   {
     icon: <Cpu size={20} />,
     title: 'Gemini API',
-    desc: 'Google\'s Gemini free-tier powers fast, reliable, accurate responses.',
+    desc: "Google's Gemini free-tier powers fast, reliable, accurate responses.",
   },
 ];
 
