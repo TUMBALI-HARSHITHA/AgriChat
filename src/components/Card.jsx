@@ -75,10 +75,10 @@ export default function Card({
       )}
 
       {/* body */}
-      <div className="flex flex-col flex-1 gap-3 p-5">
+      <div className="flex flex-col flex-1 gap-3 p-5 items-center sm:items-start text-center sm:text-left">
         {/* tag */}
         {tag && (
-          <span className={`self-start text-xs font-semibold px-2.5 py-1 rounded-full border ${tagColors[tagColor] ?? tagColors.green}`}>
+          <span className={`self-center sm:self-start text-xs font-semibold px-2.5 py-1 rounded-full border ${tagColors[tagColor] ?? tagColors.green}`}>
             {tag}
           </span>
         )}
@@ -97,7 +97,7 @@ export default function Card({
         {ActionEl && actionLabel && (
           <ActionEl
             {...actionProps}
-            className="mt-auto self-start inline-flex items-center gap-1.5 text-sm font-semibold text-green-400 hover:text-green-300 transition-colors duration-200 group/link"
+            className="mt-auto self-center sm:self-start inline-flex items-center gap-1.5 text-sm font-semibold text-green-400 hover:text-green-300 transition-colors duration-200 group/link"
           >
             {actionLabel}
             {actionHref

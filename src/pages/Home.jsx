@@ -79,7 +79,7 @@ export default function Home() {
           </div>
 
           {/* CTA strip */}
-          <div className="mt-12 rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-5">
+          <div className="mt-12 rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
                 Ready to ask your first question?
