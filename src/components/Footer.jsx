@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Sprout, Code2, Twitter, Linkedin, Mail, Heart } from 'lucide-react';
+import { Sprout, Globe, Share2, Link as LinkIcon, Mail, Heart } from 'lucide-react';
 
 const footerLinks = {
   Product: [
+    { label: 'Home', path: '/' },
     { label: 'Chat', path: '/chat' },
+    { label: 'Dashboard', path: '/dashboard' },
     { label: 'About', path: '/about' },
     { label: 'Login', path: '/login' },
   ],
@@ -20,9 +22,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: <Code2 size={16} />, href: '#', label: 'GitHub' },
-  { icon: <Twitter size={16} />, href: '#', label: 'Twitter/X' },
-  { icon: <Linkedin size={16} />, href: '#', label: 'LinkedIn' },
+  { icon: <Globe size={16} />, href: '#', label: 'Website' },
+  { icon: <Share2 size={16} />, href: '#', label: 'Share' },
+  { icon: <LinkIcon size={16} />, href: '#', label: 'LinkedIn' },
   { icon: <Mail size={16} />, href: 'mailto:hello@agrichat.in', label: 'Email' },
 ];
 
@@ -40,7 +42,7 @@ export default function Footer() {
               <div className="w-9 h-9 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Sprout size={18} className="text-white" />
               </div>
-              <span className="font-bold text-xl text-white font-['Plus_Jakarta_Sans']">
+              <span className="font-bold text-xl text-white">
                 Agri<span className="text-green-400">Chat</span>
               </span>
             </Link>
@@ -51,7 +53,7 @@ export default function Footer() {
             {/* Disclaimer box */}
             <div className="p-3 rounded-xl bg-amber-900/10 border border-amber-800/20">
               <p className="text-xs text-amber-500/80 leading-relaxed">
-                ⚠️ <strong className="text-amber-400">Disclaimer:</strong> All responses are AI-generated suggestions. Always verify critical decisions with a licensed agricultural extension officer.
+                <strong className="text-amber-400">Disclaimer:</strong> All responses are AI-generated suggestions. Always verify with a licensed agricultural extension officer.
               </p>
             </div>
           </div>
@@ -92,7 +94,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="py-5 border-t border-green-900/20 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-600 flex items-center gap-1.5">
-            © {currentYear} AgriChat. Made with{' '}
+            &copy; {currentYear} AgriChat. Made with{' '}
             <Heart size={12} className="text-red-500 fill-red-500" /> for Uttarakhand farmers.
           </p>
 
