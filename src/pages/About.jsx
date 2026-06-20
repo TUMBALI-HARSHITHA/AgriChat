@@ -55,13 +55,15 @@ const values = [
 
 export default function About() {
   return (
-    <div className="min-h-screen page-enter" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
-      <div className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16">
+    <div className="min-h-screen w-full page-enter flex flex-col items-center" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
+      <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center">
 
         {/* ── Page header ── */}
-        <div className="text-center mb-14">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center mx-auto mb-5 glow-green">
-            <Sprout size={28} className="text-white" />
+        <div className="text-center mb-14 flex flex-col items-center w-full">
+          <div className="flex justify-center mb-5">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center glow-green shrink-0">
+              <Sprout size={28} className="text-white" />
+            </div>
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
             About <span className="gradient-text">AgriChat</span>
@@ -73,7 +75,7 @@ export default function About() {
         </div>
 
         {/* ── Mission ── */}
-        <div className="glass rounded-2xl p-6 sm:p-8 mb-16 border border-green-900/30 text-center max-w-4xl mx-auto">
+        <div className="glass rounded-2xl p-6 sm:p-8 mb-16 border border-green-900/30 text-center w-full max-w-4xl">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Our Mission</h2>
           <p className="text-gray-400 leading-relaxed">
             Uttarakhand's mountain agriculture faces unique challenges — steep terrain, erratic rainfall,
@@ -84,17 +86,17 @@ export default function About() {
         </div>
 
         {/* ── Cards ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-20 justify-items-center justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-20 w-full justify-items-center justify-center">
           {teamCards.map((c, i) => <Card key={i} {...c} />)}
         </div>
 
         {/* ── Core Principles ── */}
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-8 text-center">Core Principles</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-20 justify-items-center justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-20 w-full justify-items-center justify-center">
           {values.map(v => (
             <div
               key={v.title}
-              className="flex flex-col items-center text-center gap-4 p-5 rounded-xl bg-[#111a11] border border-green-900/20 hover:border-green-700/30 transition-colors w-full"
+              className="flex flex-col items-center text-center gap-4 p-5 rounded-xl bg-[#111a11] border border-green-900/20 hover:border-green-700/30 transition-colors w-full max-w-lg"
             >
               <div className="w-10 h-10 rounded-xl bg-green-900/40 border border-green-700/20 flex items-center justify-center text-green-400 shrink-0">
                 {v.icon}
@@ -108,7 +110,7 @@ export default function About() {
         </div>
 
         {/* ── Disclaimer ── */}
-        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-16 text-center max-w-4xl mx-auto">
+        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-5 sm:p-6 mb-16 text-center w-full max-w-4xl mx-auto">
           <h3 className="text-base font-bold text-amber-400 mb-2">⚠️ Important Disclaimer</h3>
           <p className="text-sm text-amber-500/80 leading-relaxed">
             All responses provided by AgriChat are AI-generated and intended for informational purposes
