@@ -5,8 +5,8 @@ import { Sprout, Menu, X, MessageSquareText, User, Bell } from 'lucide-react';
 const navLinks = [
   { label: 'Home', path: '/' },
   { label: 'Chat', path: '/chat' },
+  { label: 'Dashboard', path: '/dashboard' },
   { label: 'About', path: '/about' },
-  { label: 'Login', path: '/login' },
 ];
 
 export default function Navbar() {

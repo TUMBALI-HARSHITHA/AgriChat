@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Chat from './pages/Chat';
 import About from './pages/About';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
 // Wrapper to conditionally hide footer on Chat page for better UX
 function Layout() {
@@ -20,6 +21,7 @@ function Layout() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           {/* 404 fallback */}
           <Route
             path="*"
