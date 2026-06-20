@@ -74,7 +74,7 @@ export default function Home() {
           </div>
 
           {/* cards grid — 1 col → 2 col → 4 col (centered) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 justify-items-center justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-10 lg:gap-y-14 justify-items-center justify-center">
             {features.map((f, i) => <Card key={i} {...f} />)}
           </div>
 
