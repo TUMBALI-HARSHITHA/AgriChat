@@ -136,7 +136,7 @@ export default function Login() {
           </p>
         </div>
 
-        <p className="text-center text-xs text-gray-700 mt-4">
+        <p className="text-center text-xs text-gray-700 mt-6">
           For Uttarakhand Agricultural Supervisors
         </p>
       </div>
