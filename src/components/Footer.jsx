@@ -1,85 +1,86 @@
 import { Link } from 'react-router-dom';
 import { Sprout, Globe, Share2, Link as LinkIcon, Mail, Heart } from 'lucide-react';
 
-const footerLinks = {
+const NAV = {
   Product: [
-    { label: 'Home', path: '/' },
-    { label: 'Chat', path: '/chat' },
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'About', path: '/about' },
-    { label: 'Login', path: '/login' },
+    { label: 'Home',      to: '/' },
+    { label: 'Chat',      to: '/chat' },
+    { label: 'Dashboard', to: '/dashboard' },
+    { label: 'About',     to: '/about' },
+    { label: 'Login',     to: '/login' },
   ],
   Resources: [
-    { label: 'Crop Guide', path: '#', external: false },
-    { label: 'Disease Index', path: '#', external: false },
-    { label: 'Uttarakhand Agri Dept', path: 'https://agriculture.uk.gov.in', external: true },
+    { label: 'Crop Guide',          to: '#' },
+    { label: 'Disease Index',        to: '#' },
+    { label: 'UK Agri Department',   href: 'https://agriculture.uk.gov.in' },
   ],
   Legal: [
-    { label: 'Privacy Policy', path: '#' },
-    { label: 'Terms of Use', path: '#' },
-    { label: 'Disclaimer', path: '#' },
+    { label: 'Privacy Policy', to: '#' },
+    { label: 'Terms of Use',   to: '#' },
+    { label: 'Disclaimer',     to: '#' },
   ],
 };
 
-const socialLinks = [
-  { icon: <Globe size={16} />, href: '#', label: 'Website' },
-  { icon: <Share2 size={16} />, href: '#', label: 'Share' },
-  { icon: <LinkIcon size={16} />, href: '#', label: 'LinkedIn' },
-  { icon: <Mail size={16} />, href: 'mailto:hello@agrichat.in', label: 'Email' },
+const SOCIALS = [
+  { icon: <Globe   size={15} />, href: '#',                        label: 'Website'  },
+  { icon: <Share2  size={15} />, href: '#',                        label: 'Social'   },
+  { icon: <LinkIcon size={15}/>, href: '#',                        label: 'LinkedIn' },
+  { icon: <Mail    size={15} />, href: 'mailto:hello@agrichat.in', label: 'Email'    },
 ];
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="bg-[#080d08] border-t border-green-900/20 mt-auto">
+    <footer className="bg-[#080d08] border-t border-green-900/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main footer grid */}
-        <div className="py-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Brand column */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2.5 mb-4 group w-fit">
-              <div className="w-9 h-9 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+
+        {/* ── top grid ── */}
+        <div className="py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
+
+          {/* brand */}
+          <div className="sm:col-span-2">
+            <Link to="/" className="inline-flex items-center gap-2.5 mb-4 group">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <Sprout size={18} className="text-white" />
               </div>
-              <span className="font-bold text-xl text-white">
+              <span className="text-xl font-bold text-white">
                 Agri<span className="text-green-400">Chat</span>
               </span>
             </Link>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-6">
-              AI-powered agricultural advisory tailored for Uttarakhand's mountain farmers. Get practical, instant crop guidance in plain language.
+
+            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-5">
+              AI-powered agricultural advisory for Uttarakhand's mountain farmers. Get practical crop guidance in plain language.
             </p>
 
-            {/* Disclaimer box */}
-            <div className="p-3 rounded-xl bg-amber-900/10 border border-amber-800/20">
+            <div className="rounded-xl bg-amber-900/10 border border-amber-800/20 p-3">
               <p className="text-xs text-amber-500/80 leading-relaxed">
-                <strong className="text-amber-400">Disclaimer:</strong> All responses are AI-generated suggestions. Always verify with a licensed agricultural extension officer.
+                <strong className="text-amber-400">Disclaimer:</strong>{' '}
+                All responses are AI-generated. Always verify with a licensed agricultural extension officer.
               </p>
             </div>
           </div>
 
-          {/* Link columns */}
-          {Object.entries(footerLinks).map(([section, links]) => (
+          {/* link columns */}
+          {Object.entries(NAV).map(([section, links]) => (
             <div key={section}>
               <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-4">
                 {section}
               </h4>
-              <ul className="space-y-3">
-                {links.map((link) => (
+              <ul className="space-y-2.5">
+                {links.map(link => (
                   <li key={link.label}>
-                    {link.external ? (
+                    {link.href ? (
                       <a
-                        href={link.path}
+                        href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-gray-500 hover:text-green-400 transition-colors duration-200"
+                        className="text-sm text-gray-500 hover:text-green-400 transition-colors"
                       >
                         {link.label} ↗
                       </a>
                     ) : (
                       <Link
-                        to={link.path}
-                        className="text-sm text-gray-500 hover:text-green-400 transition-colors duration-200"
+                        to={link.to}
+                        className="text-sm text-gray-500 hover:text-green-400 transition-colors"
                       >
                         {link.label}
                       </Link>
@@ -91,37 +92,36 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
-        <div className="py-5 border-t border-green-900/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* ── bottom bar ── */}
+        <div className="py-5 border-t border-green-900/20 flex flex-col sm:flex-row items-center justify-between gap-4 flex-wrap">
           <p className="text-xs text-gray-600 flex items-center gap-1.5">
-            &copy; {currentYear} AgriChat. Made with{' '}
-            <Heart size={12} className="text-red-500 fill-red-500" /> for Uttarakhand farmers.
+            &copy; {new Date().getFullYear()} AgriChat. Made with{' '}
+            <Heart size={11} className="text-red-500 fill-red-500" /> for Uttarakhand farmers.
           </p>
 
-          {/* Social icons */}
           <div className="flex items-center gap-2">
-            {socialLinks.map((social) => (
+            {SOCIALS.map(s => (
               <a
-                key={social.label}
-                href={social.href}
-                aria-label={social.label}
+                key={s.label}
+                href={s.href}
+                aria-label={s.label}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-green-900/20 border border-green-900/30 flex items-center justify-center text-gray-500 hover:text-green-400 hover:border-green-700/40 hover:bg-green-900/30 transition-all duration-200"
+                className="w-8 h-8 rounded-lg bg-green-900/20 border border-green-900/30 flex items-center justify-center text-gray-500 hover:text-green-400 hover:bg-green-900/30 hover:border-green-700/40 transition-all"
               >
-                {social.icon}
+                {s.icon}
               </a>
             ))}
           </div>
 
-          {/* Powered by badge */}
-          <div className="flex items-center gap-2 text-xs text-gray-600">
-            <span>Powered by</span>
-            <span className="px-2 py-0.5 rounded-md bg-blue-900/20 border border-blue-800/20 text-blue-400 font-semibold text-xs">
+          <span className="inline-flex items-center gap-1.5 text-xs text-gray-600">
+            Powered by
+            <span className="px-2 py-0.5 rounded-md bg-blue-900/20 border border-blue-800/20 text-blue-400 font-semibold">
               Gemini AI
             </span>
-          </div>
+          </span>
         </div>
+
       </div>
     </footer>
   );
