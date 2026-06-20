@@ -9,7 +9,7 @@ const stats = [
 
 export default function Hero({ headline, subheadline, ctaText, ctaLink }) {
   return (
-    <section className="relative min-h-screen flex items-center hero-bg overflow-hidden" style={{ paddingTop: '64px' }}>
+    <section className="relative min-h-screen flex items-center justify-center hero-bg overflow-hidden" style={{ paddingTop: '64px' }}>
 
       {/* subtle grid overlay */}
       <div
