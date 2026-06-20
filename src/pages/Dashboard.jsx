@@ -52,7 +52,7 @@ export default function Dashboard() {
       <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
 
         {/* ── Page header ── */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 mb-14 text-center sm:text-left">
+        <div className="flex flex-col items-center justify-center gap-4 mb-14 text-center">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Dashboard</h1>
             <p className="text-gray-500 text-sm mt-1">Welcome back, Supervisor. Here's your advisory overview.</p>
@@ -64,16 +64,16 @@ export default function Dashboard() {
         </div>
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16 justify-items-center justify-center">
           {quickStats.map(s => (
             <div
               key={s.label}
-              className={`flex items-center gap-3 sm:gap-4 p-4 sm:p-5 rounded-xl border ${colorMap[s.color]}`}
+              className={`flex flex-col items-center justify-center text-center gap-2 p-4 sm:p-5 rounded-xl border w-full max-w-[240px] ${colorMap[s.color]}`}
             >
               <div className="opacity-80 shrink-0">{s.icon}</div>
               <div className="min-w-0">
                 <p className="text-xl sm:text-2xl font-bold text-white leading-none">{s.value}</p>
-                <p className="text-xs opacity-70 mt-0.5 truncate">{s.label}</p>
+                <p className="text-xs opacity-70 mt-1.5 truncate">{s.label}</p>
               </div>
             </div>
           ))}
@@ -81,30 +81,30 @@ export default function Dashboard() {
 
         {/* ── Recent Queries ── */}
         <div className="mb-16">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <div className="flex flex-col items-center justify-center text-center mb-6 gap-2">
+            <h2 className="text-lg font-bold text-white flex items-center justify-center gap-2">
               <Clock size={18} className="text-green-400 shrink-0" />
               Recent Queries
             </h2>
-            <Link to="/chat" className="text-sm text-green-400 hover:text-green-300 flex items-center gap-1 shrink-0">
+            <Link to="/chat" className="text-sm text-green-400 hover:text-green-300 flex items-center justify-center gap-1 shrink-0">
               View all <ArrowRight size={13} />
             </Link>
           </div>
 
-          {/* cards — 1 col → 3 col */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {/* cards — 1 col → 3 col (centered) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 justify-items-center justify-center">
             {recentQueries.map((q, i) => <Card key={i} {...q} />)}
           </div>
         </div>
 
         {/* ── Tip strip ── */}
-        <div className="rounded-2xl bg-gradient-to-r from-green-900/30 to-[#111a11] border border-green-700/20 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
-          <div className="flex flex-col items-center sm:items-start">
-            <p className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">💡 Seasonal Tip</p>
-            <h3 className="text-base font-bold text-white mb-1">
+        <div className="rounded-2xl bg-gradient-to-r from-green-900/30 to-[#111a11] border border-green-700/20 p-8 sm:p-10 flex flex-col items-center justify-center text-center gap-6 max-w-3xl mx-auto w-full">
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-2">💡 Seasonal Tip</p>
+            <h3 className="text-base font-bold text-white mb-2">
               Monsoon retreat — protect stored grains from humidity
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 max-w-md">
               Post-Kharif storage: ensure moisture content below 12% for wheat and rajma before bagging.
             </p>
           </div>

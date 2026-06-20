@@ -73,18 +73,18 @@ export default function Home() {
             </p>
           </div>
 
-          {/* cards grid — 1 col → 2 col → 4 col */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* cards grid — 1 col → 2 col → 4 col (centered) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 justify-items-center justify-center">
             {features.map((f, i) => <Card key={i} {...f} />)}
           </div>
 
-          {/* CTA strip */}
-          <div className="mt-20 rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+          {/* CTA strip (fully centered) */}
+          <div className="mt-20 rounded-2xl bg-gradient-to-r from-green-900/40 to-[#111a11] border border-green-700/20 p-8 sm:p-10 flex flex-col items-center justify-center text-center gap-6 max-w-3xl mx-auto w-full">
             <div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Ready to ask your first question?
               </h3>
-              <p className="text-gray-500 text-sm">No signup needed. Just type and get answers.</p>
+              <p className="text-gray-400 text-sm">No signup needed. Just type and get answers.</p>
             </div>
             <Link to="/chat" className="btn-primary shrink-0">
               Open Chat <ArrowRight size={16} />
