@@ -56,10 +56,10 @@ const values = [
 export default function About() {
   return (
     <div className="min-h-screen w-full page-enter flex flex-col items-center" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
-      <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center">
+      <div className="max-w-5xl w-full px-6 sm:px-10 lg:px-16 flex flex-col items-center gap-y-24 md:gap-y-32">
 
         {/* ── Page header ── */}
-        <div className="text-center mb-20 flex flex-col items-center w-full">
+        <div className="text-center flex flex-col items-center w-full">
           <div className="flex justify-center mb-5">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center glow-green shrink-0">
               <Sprout size={28} className="text-white" />
@@ -75,7 +75,7 @@ export default function About() {
         </div>
 
         {/* ── Mission ── */}
-        <div className="glass rounded-2xl p-6 sm:p-8 mb-32 border border-green-900/30 text-center w-full max-w-4xl">
+        <div className="glass rounded-2xl p-6 sm:p-8 border border-green-900/30 text-center w-full max-w-4xl">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Our Mission</h2>
           <p className="text-gray-400 leading-relaxed">
             Uttarakhand's mountain agriculture faces unique challenges — steep terrain, erratic rainfall,
@@ -86,31 +86,33 @@ export default function About() {
         </div>
 
         {/* ── Cards ── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 mb-36 w-full justify-items-center justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 w-full justify-items-center justify-center">
           {teamCards.map((c, i) => <Card key={i} {...c} />)}
         </div>
 
         {/* ── Core Principles ── */}
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-16 text-center">Core Principles</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 mb-36 w-full justify-items-center justify-center">
-          {values.map(v => (
-            <div
-              key={v.title}
-              className="flex flex-col items-center text-center gap-5 p-6 sm:p-8 rounded-xl bg-[#111a11] border border-green-900/20 hover:border-green-700/30 transition-colors w-full max-w-lg"
-            >
-              <div className="w-10 h-10 rounded-xl bg-green-900/40 border border-green-700/20 flex items-center justify-center text-green-400 shrink-0">
-                {v.icon}
+        <div className="w-full flex flex-col items-center">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-12 text-center">Core Principles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 w-full justify-items-center justify-center">
+            {values.map(v => (
+              <div
+                key={v.title}
+                className="flex flex-col items-center text-center gap-5 p-6 sm:p-8 rounded-xl bg-[#111a11] border border-green-900/20 hover:border-green-700/30 transition-colors w-full max-w-lg"
+              >
+                <div className="w-10 h-10 rounded-xl bg-green-900/40 border border-green-700/20 flex items-center justify-center text-green-400 shrink-0">
+                  {v.icon}
+                </div>
+                <div>
+                  <p className="font-semibold text-white mb-1">{v.title}</p>
+                  <p className="text-sm text-gray-400">{v.desc}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-white mb-1">{v.title}</p>
-                <p className="text-sm text-gray-400">{v.desc}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* ── Disclaimer ── */}
-        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-6 sm:p-8 mb-32 text-center w-full max-w-4xl mx-auto">
+        <div className="rounded-2xl bg-amber-900/10 border border-amber-800/20 p-6 sm:p-8 text-center w-full max-w-4xl mx-auto">
           <h3 className="text-base font-bold text-amber-400 mb-2">⚠️ Important Disclaimer</h3>
           <p className="text-sm text-amber-500/80 leading-relaxed">
             All responses provided by AgriChat are AI-generated and intended for informational purposes

@@ -64,7 +64,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16 justify-items-center justify-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 lg:gap-x-8 mb-16 justify-items-center justify-center">
           {quickStats.map(s => (
             <div
               key={s.label}
@@ -92,7 +92,7 @@ export default function Dashboard() {
           </div>
 
           {/* cards — 1 col → 3 col (centered) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-10 justify-items-center justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-12 md:gap-x-10 justify-items-center justify-center">
             {recentQueries.map((q, i) => <Card key={i} {...q} />)}
           </div>
         </div>
