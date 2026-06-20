@@ -33,7 +33,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-6">
           {navLinks.map(({ label, path }) => (
             <Link
               key={path}
@@ -51,7 +51,7 @@ export default function Navbar() {
         </div>
 
         {/* Desktop icons */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-3">
           <button
             aria-label="Notifications"
             className="w-9 h-9 rounded-lg border border-green-800/30 bg-green-900/20 flex items-center justify-center text-gray-400 hover:text-green-300 transition-colors"
