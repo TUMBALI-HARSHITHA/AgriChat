@@ -24,6 +24,7 @@ export default function Card({
   actionLabel,
   actionLink,
   actionHref,
+  onClick,
   variant = 'default',
 }) {
   const tagColors = {
@@ -43,8 +44,10 @@ export default function Card({
       'bg-transparent border-green-900/20 hover:border-green-700/30 hover:bg-green-900/10',
   };
 
-  const ActionEl   = actionLink ? Link : actionHref ? 'a' : null;
-  const actionProps = actionLink
+  const ActionEl   = onClick ? 'button' : actionLink ? Link : actionHref ? 'a' : null;
+  const actionProps = onClick
+    ? { onClick, type: 'button' }
+    : actionLink
     ? { to: actionLink }
     : actionHref
     ? { href: actionHref, target: '_blank', rel: 'noopener noreferrer' }
@@ -52,9 +55,11 @@ export default function Card({
 
   return (
     <div
+      onClick={onClick}
       className={[
         'group flex flex-col rounded-2xl border overflow-hidden w-full',
         'transition-all duration-300 hover:-translate-y-1',
+        onClick ? 'cursor-pointer' : '',
         variantClass[variant] ?? variantClass.default,
       ].join(' ')}
     >

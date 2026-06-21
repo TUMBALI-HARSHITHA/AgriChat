@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Sprout, RotateCcw, AlertTriangle, Bot, User } from 'lucide-react';
+import { Button, Modal, Toast, Loader } from '../components/ui';
 
 const SYSTEM_PROMPT = `You are AgriChat, an expert agricultural advisor specializing in Uttarakhand's mountain crops and farming practices. 
 You ONLY answer questions related to:
@@ -56,20 +57,13 @@ function MessageBubble({ message }) {
 
 function TypingIndicator() {
   return (
-    <div className="flex items-end gap-3">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-600/30 flex items-center justify-center">
+    <div className="flex items-end gap-3 animate-fadeInUp">
+      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-600/30 flex items-center justify-center shrink-0">
         <Bot size={13} className="text-white" />
       </div>
-      <div className="chat-bubble-ai px-4 py-3">
-        <div className="flex gap-1.5 items-center h-4">
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              className="w-2 h-2 rounded-full bg-green-500 animate-bounce"
-              style={{ animationDelay: `${i * 0.15}s` }}
-            />
-          ))}
-        </div>
+      <div className="chat-bubble-ai px-4 py-3 flex items-center gap-2">
+        <Loader size="sm" color="green" />
+        <span className="text-xs text-green-400 font-semibold tracking-wider uppercase animate-pulse">Consulting Gemini...</span>
       </div>
     </div>
   );
@@ -82,6 +76,8 @@ export default function Chat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [toast, setToast] = useState(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -184,16 +180,18 @@ export default function Chat() {
         {/* Header */}
         <div className="relative flex flex-col items-center justify-center text-center mb-6 w-full gap-2">
           {/* Clear button (top right absolute) */}
-          <button
+          <Button
             id="clear-chat-btn"
-            onClick={clearChat}
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsConfirmOpen(true)}
             aria-label="Clear chat"
             title="Clear chat"
-            className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 px-3 py-2 rounded-lg bg-green-900/20 border border-green-900/30 text-gray-500 hover:text-green-400 hover:border-green-700/40 text-xs transition-all duration-200"
+            className="absolute right-0 top-1/2 -translate-y-1/2 border border-green-900/30"
           >
-            <RotateCcw size={13} />
+            <RotateCcw size={13} className="mr-1.5" />
             <span className="hidden sm:inline">Clear</span>
-          </button>
+          </Button>
 
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center glow-green-sm mb-1 shrink-0">
             <Sprout size={22} className="text-white" />
@@ -235,7 +233,7 @@ export default function Chat() {
                   setInput(q);
                   textareaRef.current?.focus();
                 }}
-                className="text-xs px-3 py-2 rounded-full bg-green-900/20 border border-green-800/30 text-green-400 hover:bg-green-800/30 hover:border-green-600/40 transition-all duration-200"
+                className="text-xs px-3 py-2 rounded-full bg-green-900/20 border border-green-800/30 text-green-400 hover:bg-green-800/30 hover:border-green-600/40 transition-all duration-200 cursor-pointer"
               >
                 {q}
               </button>
@@ -263,21 +261,53 @@ export default function Chat() {
             className="flex-1 bg-transparent text-sm text-white placeholder-gray-600 resize-none outline-none leading-relaxed"
             disabled={isLoading}
           />
-          <button
+          <Button
             id="send-message-btn"
+            size="icon"
+            disabled={!input.trim()}
+            isLoading={isLoading}
             onClick={sendMessage}
-            disabled={!input.trim() || isLoading}
             aria-label="Send message"
-            className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-600 to-green-700 flex items-center justify-center text-white hover:from-green-500 hover:to-green-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 flex-shrink-0"
+            className="rounded-xl"
           >
             <Send size={16} />
-          </button>
+          </Button>
         </div>
 
         <p className="text-center text-xs text-gray-700 mt-3">
           Press <kbd className="px-1.5 py-0.5 rounded bg-green-900/30 border border-green-800/30 text-green-600 text-xs">Enter</kbd> to send · <kbd className="px-1.5 py-0.5 rounded bg-green-900/30 border border-green-800/30 text-green-600 text-xs">Shift+Enter</kbd> for new line
         </p>
       </div>
+
+      {/* Confirmation Modal for Clearing Chat History */}
+      <Modal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        title="Clear Chat History"
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setIsConfirmOpen(false)}>Cancel</Button>
+            <Button variant="danger" onClick={() => {
+              clearChat();
+              setIsConfirmOpen(false);
+              setToast({ message: 'Chat history cleared successfully', type: 'success' });
+            }}>Clear History</Button>
+          </>
+        }
+      >
+        <div className="text-gray-300">
+          Are you sure you want to clear your chat history? This action cannot be undone and all current messages will be lost.
+        </div>
+      </Modal>
+
+      {/* Toast message if present */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
