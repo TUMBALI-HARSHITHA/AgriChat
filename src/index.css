@@ -20,17 +20,17 @@
 }
 
 html.light {
-  --color-bg:        #f4f8f4;
-  --color-surface:   #ffffff;
+  --color-bg:        #ffffff;
+  --color-surface:   #f4f8f4;
   --color-surface-2: #e2ede2;
   --color-border:    #c2dec2;
   --color-primary:   #16a34a;
   --color-primary-d: #15803d;
   --color-primary-l: #22c55e;
   --color-accent:    #d97706;
-  --color-text:      #1a331a;
-  --color-text-title: #0a1f0a;
-  --color-text-muted: #4b6b4b;
+  --color-text:      #000000;
+  --color-text-title: #000000;
+  --color-text-muted: #374151;
   --color-muted:     #5b7a5b;
   --color-glass-bg:  rgba(255, 255, 255, 0.75);
   --color-glass-border: rgba(22, 163, 74, 0.15);
@@ -42,13 +42,30 @@ html.light h2,
 html.light h3,
 html.light h4,
 html.light .text-white:not(.btn-primary *):not(.chat-bubble-user *):not(.bg-gradient-to-br *):not(button.primary *):not([id*="submit-btn"] *):not(.w-14 *):not(.w-16 *):not(.w-12 *) {
-  color: var(--color-text-title) !important;
+  color: #000000 !important;
 }
 
 html.light .text-gray-400,
 html.light .text-gray-500,
 html.light .text-gray-600 {
-  color: var(--color-text-muted) !important;
+  color: #374151 !important;
+}
+
+/* Chat bubble styling in light mode */
+html.light .chat-bubble-ai {
+  border: 1px solid #000000 !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+html.light .chat-bubble-ai p,
+html.light .chat-bubble-ai span:not([class*="bg-green"]):not([class*="border-t-green"]):not(.animate-pulse) {
+  color: #000000 !important;
+}
+
+html.light .chat-bubble-user {
+  background: linear-gradient(135deg, #4ade80, #16a34a) !important;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.4) !important;
+  color: #ffffff !important;
 }
 
 /* Ensure inputs/textareas are styled nicely in light mode */
