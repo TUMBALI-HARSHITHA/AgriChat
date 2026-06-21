@@ -6,7 +6,7 @@ import React from 'react';
  * @param {Object} props
  * @param {React.ReactNode} props.children - Button label or nested elements
  * @param {'primary' | 'secondary' | 'danger' | 'ghost'} [props.variant='primary'] - Button style variant
- * @param {'sm' | 'md' | 'lg'} [props.size='md'] - Button size
+ * @param {'sm' | 'md' | 'lg' | 'icon'} [props.size='md'] - Button size
  * @param {boolean} [props.isLoading=false] - Shows loading spinner if true
  * @param {boolean} [props.disabled=false] - Disables the button
  * @param {string} [props.className=''] - Additional CSS classes
@@ -33,6 +33,7 @@ export default function Button({
     sm: 'px-3 py-1.5 text-xs',
     md: 'px-4 py-2.5 text-sm',
     lg: 'px-6 py-3.5 text-base',
+    icon: 'w-10 h-10 text-sm flex items-center justify-center shrink-0',
   };
 
   return (
@@ -42,9 +43,9 @@ export default function Button({
       {...rest}
     >
       {isLoading && (
-        <span className="w-4 h-4 mr-2 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0" />
+        <span className={size === 'icon' ? 'w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0' : 'w-4 h-4 mr-2 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0'} />
       )}
-      {children}
+      {!isLoading && children}
     </button>
   );
 }

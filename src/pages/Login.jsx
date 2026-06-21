@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Sprout, Eye, EyeOff, Mail, Lock, ArrowRight, LogIn } from 'lucide-react';
+import { Button, Input } from '../components/ui';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [form, setForm]         = useState({ email: '', password: '' });
   const [loading, setLoading]   = useState(false);
@@ -46,52 +48,40 @@ export default function Login() {
           <form onSubmit={submit} className="flex flex-col gap-5">
 
             {/* email */}
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-email" className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Email
-              </label>
-              <div className="relative">
-                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none" />
-                <input
-                  id="login-email"
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handle}
-                  required
-                  placeholder="supervisor@agri.uk.gov.in"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0a0f0a] border border-green-900/40 text-white text-sm placeholder-gray-700 outline-none focus:border-green-600/60 focus:ring-1 focus:ring-green-600/20 transition-all"
-                />
-              </div>
-            </div>
+            <Input
+              id="login-email"
+              type="email"
+              name="email"
+              label="Email"
+              value={form.email}
+              onChange={handle}
+              required
+              placeholder="supervisor@agri.uk.gov.in"
+              icon={<Mail size={15} />}
+            />
 
             {/* password */}
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-password" className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Password
-              </label>
-              <div className="relative">
-                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none" />
-                <input
-                  id="login-password"
-                  type={showPass ? 'text' : 'password'}
-                  name="password"
-                  value={form.password}
-                  onChange={handle}
-                  required
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-3 rounded-xl bg-[#0a0f0a] border border-green-900/40 text-white text-sm placeholder-gray-700 outline-none focus:border-green-600/60 focus:ring-1 focus:ring-green-600/20 transition-all"
-                />
+            <Input
+              id="login-password"
+              type={showPass ? 'text' : 'password'}
+              name="password"
+              label="Password"
+              value={form.password}
+              onChange={handle}
+              required
+              placeholder="••••••••"
+              icon={<Lock size={15} />}
+              rightElement={
                 <button
                   type="button"
                   aria-label={showPass ? 'Hide password' : 'Show password'}
                   onClick={() => setShowPass(v => !v)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-300 transition-colors"
+                  className="text-gray-600 hover:text-gray-300 transition-colors cursor-pointer flex items-center justify-center p-1 rounded hover:bg-green-900/10"
                 >
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
-              </div>
-            </div>
+              }
+            />
 
             {/* forgot */}
             <div className="text-right -mt-2">
@@ -101,21 +91,14 @@ export default function Login() {
             </div>
 
             {/* submit */}
-            <button
+            <Button
               id="login-submit-btn"
               type="submit"
-              disabled={loading}
-              className="btn-primary justify-center w-full py-3 text-sm"
+              isLoading={loading}
+              className="w-full justify-center py-3 text-sm"
             >
-              {loading ? (
-                <>
-                  <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  Signing in…
-                </>
-              ) : (
-                <><LogIn size={17} /> Sign In</>
-              )}
-            </button>
+              <LogIn size={17} className="mr-1.5" /> Sign In
+            </Button>
           </form>
 
           {/* divider */}
@@ -126,9 +109,13 @@ export default function Login() {
           </div>
 
           {/* guest CTA */}
-          <Link to="/chat" className="btn-secondary w-full justify-center py-3 text-sm">
-            Try without login <ArrowRight size={14} />
-          </Link>
+          <Button
+            variant="secondary"
+            className="w-full justify-center py-3 text-sm"
+            onClick={() => navigate('/chat')}
+          >
+            Try without login <ArrowRight size={14} className="ml-1.5" />
+          </Button>
 
           <p className="text-center text-xs text-gray-600 mt-5">
             No account?{' '}

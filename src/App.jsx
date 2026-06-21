@@ -6,7 +6,6 @@ import Chat      from './pages/Chat';
 import About     from './pages/About';
 import Login     from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Showcase  from './pages/Showcase';
 
 function Layout() {
   const { pathname } = useLocation();
@@ -25,7 +24,6 @@ function Layout() {
           <Route path="/about"     element={<About />} />
           <Route path="/login"     element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/showcase"  element={<Showcase />} />
           <Route
             path="*"
             element={

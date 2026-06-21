@@ -14,6 +14,7 @@ import React from 'react';
  * @param {boolean} [props.required=false] - Mark input as required
  * @param {string} [props.error] - Error message to display below the input
  * @param {React.ReactNode} [props.icon] - Icon element displayed inside the input on the left
+ * @param {React.ReactNode} [props.rightElement] - Element displayed inside the input on the right (e.g. eye toggle button)
  * @param {string} [props.className=''] - Additional CSS classes for the input
  */
 export default function Input({
@@ -27,6 +28,7 @@ export default function Input({
   required = false,
   error,
   icon,
+  rightElement,
   className = '',
   ...rest
 }) {
@@ -53,12 +55,18 @@ export default function Input({
           placeholder={placeholder}
           className={[
             'w-full py-3 rounded-xl bg-[#0a0f0a] border text-white text-sm placeholder-gray-700 outline-none transition-all',
-            icon ? 'pl-10 pr-4' : 'px-4',
+            icon ? 'pl-10' : 'pl-4',
+            rightElement ? 'pr-10' : 'pr-4',
             error ? 'border-red-500/50 focus:border-red-500' : 'border-green-900/40 focus:border-green-600/60 focus:ring-1 focus:ring-green-600/20',
             className
           ].join(' ')}
           {...rest}
         />
+        {rightElement && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+            {rightElement}
+          </div>
+        )}
       </div>
       {error && (
         <span className="text-xs text-red-400">{error}</span>
