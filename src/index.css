@@ -63,9 +63,74 @@ html.light .chat-bubble-ai span:not([class*="bg-green"]):not([class*="border-t-g
 }
 
 html.light .chat-bubble-user {
-  background: linear-gradient(135deg, #4ade80, #16a34a) !important;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.4) !important;
-  color: #ffffff !important;
+  background: linear-gradient(135deg, #e6f7ed, #dcf5e7) !important;
+  border: 1px solid #86efac !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+html.light .chat-bubble-user * {
+  color: #000000 !important;
+}
+
+/* Button overrides in light mode */
+html.light .btn-primary {
+  background: linear-gradient(135deg, #e6f7ed, #dcf5e7) !important;
+  color: #000000 !important;
+  border: 1px solid #16a34a !important;
+  box-shadow: none !important;
+}
+html.light .btn-primary * {
+  color: #000000 !important;
+}
+html.light .btn-primary:hover {
+  background: linear-gradient(135deg, #dcf5e7, #bbf7d0) !important;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15) !important;
+}
+
+html.light .btn-secondary {
+  background: #f4f8f4 !important;
+  color: #16a34a !important;
+  border: 1px solid #86efac !important;
+}
+html.light .btn-secondary * {
+  color: #16a34a !important;
+}
+html.light .btn-secondary:hover {
+  background: #e6f7ed !important;
+}
+
+/* Danger buttons in light mode */
+html.light .bg-gradient-to-br.from-red-600.to-red-800 {
+  background: linear-gradient(135deg, #fee2e2, #fecaca) !important;
+  color: #991b1b !important;
+  border: 1px solid #f87171 !important;
+}
+html.light .bg-gradient-to-br.from-red-600.to-red-800 * {
+  color: #991b1b !important;
+}
+
+/* Logo containers and green gradients in light mode */
+html.light .bg-gradient-to-br.from-green-500.to-green-700,
+html.light .bg-gradient-to-br.from-green-600.to-green-700,
+html.light [class*="from-green-500"][class*="to-green-700"],
+html.light [class*="from-green-600"][class*="to-green-700"] {
+  background: linear-gradient(135deg, #e6f7ed, #dcf5e7) !important;
+  border: 1px solid #86efac !important;
+}
+html.light .bg-gradient-to-br.from-green-500.to-green-700 *,
+html.light .bg-gradient-to-br.from-green-600.to-green-700 *,
+html.light [class*="from-green-500"][class*="to-green-700"] *,
+html.light [class*="from-green-600"][class*="to-green-700"] * {
+  color: #16a34a !important;
+}
+
+/* Avatar profile overrides in light mode */
+html.light .rounded-full.bg-gradient-to-br.from-green-500.to-green-700 {
+  background: #dcf5e7 !important;
+  border: 1px solid #86efac !important;
+}
+html.light .rounded-full.bg-gradient-to-br.from-green-500.to-green-700 * {
+  color: #16a34a !important;
 }
 
 /* Ensure inputs/textareas are styled nicely in light mode */
