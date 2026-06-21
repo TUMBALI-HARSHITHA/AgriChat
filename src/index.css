@@ -21,9 +21,9 @@
 
 html.light {
   --color-bg:        #ffffff;
-  --color-surface:   #f4f8f4;
-  --color-surface-2: #e2ede2;
-  --color-border:    #c2dec2;
+  --color-surface:   #eaf5ea; /* soft light sage green card background */
+  --color-surface-2: #d9edd9; /* slightly darker soft green */
+  --color-border:    #bce2bc; /* soft green border */
   --color-primary:   #16a34a;
   --color-primary-d: #15803d;
   --color-primary-l: #22c55e;
@@ -176,6 +176,25 @@ html.light kbd {
   background-color: var(--color-surface-2) !important;
   border-color: var(--color-border) !important;
   color: var(--color-primary-d) !important;
+}
+
+/* Card and Container background overrides in light mode */
+html.light .bg-\[\#111a11\] {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+}
+html.light .from-green-900\/30 {
+  --tw-gradient-from: rgba(22, 163, 74, 0.08) !important;
+}
+html.light .to-\[\#111a11\] {
+  --tw-gradient-to: var(--color-surface) !important;
+}
+html.light footer {
+  background-color: var(--color-surface) !important;
+  border-top-color: var(--color-border) !important;
+}
+html.light .md\:hidden.overflow-hidden div {
+  background-color: var(--color-surface) !important;
 }
 
 /* ─── Reset ─────────────────────────────────────────────────── */
