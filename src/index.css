@@ -109,27 +109,7 @@ html.light .bg-gradient-to-br.from-red-600.to-red-800 * {
   color: #991b1b !important;
 }
 
-/* Logo containers and green gradients in light mode */
-html.light .bg-gradient-to-br.from-green-500.to-green-700,
-html.light .bg-gradient-to-br.from-green-600.to-green-700,
-html.light [class*="from-green-500"][class*="to-green-700"],
-html.light [class*="from-green-600"][class*="to-green-700"] {
-  background: linear-gradient(135deg, #e6f7ed, #dcf5e7) !important;
-  border: 1px solid #86efac !important;
-}
-html.light .bg-gradient-to-br.from-green-500.to-green-700 *,
-html.light .bg-gradient-to-br.from-green-600.to-green-700 *,
-html.light [class*="from-green-500"][class*="to-green-700"] *,
-html.light [class*="from-green-600"][class*="to-green-700"] * {
-  color: #16a34a !important;
-}
-
-/* Avatar profile overrides in light mode */
-html.light .rounded-full.bg-gradient-to-br.from-green-500.to-green-700 {
-  background: #dcf5e7 !important;
-  border: 1px solid #86efac !important;
-}
-html.light .rounded-full.bg-gradient-to-br.from-green-500.to-green-700 * {
+html.light .text-green-400 {
   color: #16a34a !important;
 }
 
@@ -195,6 +175,52 @@ html.light footer {
 }
 html.light .md\:hidden.overflow-hidden div {
   background-color: var(--color-surface) !important;
+}
+
+/* Card tag overrides (Make tags borderless bold colored text with no background fill) in light mode */
+html.light [class*="bg-green-900/40"],
+html.light [class*="bg-green-900\/40"] {
+  background-color: transparent !important;
+  border: none !important;
+  color: #16a34a !important;
+  font-weight: 700 !important;
+  padding: 0 !important;
+}
+
+html.light [class*="bg-amber-900/40"],
+html.light [class*="bg-amber-900\/40"] {
+  background-color: transparent !important;
+  border: none !important;
+  color: #d97706 !important;
+  font-weight: 700 !important;
+  padding: 0 !important;
+}
+
+html.light [class*="bg-blue-900/40"],
+html.light [class*="bg-blue-900\/40"] {
+  background-color: transparent !important;
+  border: none !important;
+  color: #2563eb !important;
+  font-weight: 700 !important;
+  padding: 0 !important;
+}
+
+html.light [class*="bg-red-900/40"],
+html.light [class*="bg-red-900\/40"] {
+  background-color: transparent !important;
+  border: none !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+  padding: 0 !important;
+}
+
+html.light [class*="bg-purple-900/40"],
+html.light [class*="bg-purple-900\/40"] {
+  background-color: transparent !important;
+  border: none !important;
+  color: #7e22ce !important;
+  font-weight: 700 !important;
+  padding: 0 !important;
 }
 
 /* ─── Reset ─────────────────────────────────────────────────── */
