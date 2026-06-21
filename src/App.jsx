@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home      from './pages/Home';
@@ -51,8 +52,10 @@ function Layout() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Layout />
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Layout />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

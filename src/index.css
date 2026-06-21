@@ -12,7 +12,88 @@
   --color-primary-l: #4ade80;
   --color-accent:    #f59e0b;
   --color-text:      #f0fdf4;
+  --color-text-title: #ffffff;
+  --color-text-muted: #9ca3af;
   --color-muted:     #6b7280;
+  --color-glass-bg:  rgba(26, 43, 26, 0.55);
+  --color-glass-border: rgba(74, 222, 128, 0.07);
+}
+
+html.light {
+  --color-bg:        #f4f8f4;
+  --color-surface:   #ffffff;
+  --color-surface-2: #e2ede2;
+  --color-border:    #c2dec2;
+  --color-primary:   #16a34a;
+  --color-primary-d: #15803d;
+  --color-primary-l: #22c55e;
+  --color-accent:    #d97706;
+  --color-text:      #1a331a;
+  --color-text-title: #0a1f0a;
+  --color-text-muted: #4b6b4b;
+  --color-muted:     #5b7a5b;
+  --color-glass-bg:  rgba(255, 255, 255, 0.75);
+  --color-glass-border: rgba(22, 163, 74, 0.15);
+}
+
+/* ─── Light Mode Global Text/Surface Overrides ─────────────── */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light .text-white:not(.btn-primary *):not(.chat-bubble-user *):not(.bg-gradient-to-br *):not(button.primary *):not([id*="submit-btn"] *):not(.w-14 *):not(.w-16 *):not(.w-12 *) {
+  color: var(--color-text-title) !important;
+}
+
+html.light .text-gray-400,
+html.light .text-gray-500,
+html.light .text-gray-600 {
+  color: var(--color-text-muted) !important;
+}
+
+/* Ensure inputs/textareas are styled nicely in light mode */
+html.light input,
+html.light textarea {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: var(--color-text-muted) !important;
+  opacity: 0.6;
+}
+
+/* Specific stats cards styling in light mode */
+html.light .bg-green-900\/30 {
+  background-color: rgba(22, 163, 74, 0.12) !important;
+  color: #15803d !important;
+  border-color: rgba(22, 163, 74, 0.22) !important;
+}
+html.light .bg-blue-900\/30 {
+  background-color: rgba(37, 99, 235, 0.12) !important;
+  color: #1d4ed8 !important;
+  border-color: rgba(37, 99, 235, 0.22) !important;
+}
+html.light .bg-purple-900\/30 {
+  background-color: rgba(147, 51, 234, 0.12) !important;
+  color: #7e22ce !important;
+  border-color: rgba(147, 51, 234, 0.22) !important;
+}
+html.light .bg-amber-900\/30 {
+  background-color: rgba(217, 119, 6, 0.12) !important;
+  color: #b45309 !important;
+  border-color: rgba(217, 119, 6, 0.22) !important;
+}
+
+/* Fix specific dark labels on light background */
+html.light label {
+  color: var(--color-text-muted) !important;
+}
+html.light kbd {
+  background-color: var(--color-surface-2) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-primary-d) !important;
 }
 
 /* ─── Reset ─────────────────────────────────────────────────── */
@@ -28,6 +109,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 img, svg { display: block; max-width: 100%; }
@@ -40,10 +122,11 @@ img, svg { display: block; max-width: 100%; }
 
 /* ─── Glassmorphism ──────────────────────────────────────────── */
 .glass {
-  background: rgba(26, 43, 26, 0.55);
+  background: var(--color-glass-bg);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(74, 222, 128, 0.07);
+  border: 1px solid var(--color-glass-border);
+  transition: background 0.3s ease, border 0.3s ease;
 }
 
 /* ─── Glows ──────────────────────────────────────────────────── */

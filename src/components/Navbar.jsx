@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sprout, Menu, X, MessageSquareText, User, Bell } from 'lucide-react';
+import { Sprout, Menu, X, MessageSquareText, User, Bell, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const navLinks = [
   { label: 'Home',      path: '/' },
@@ -13,6 +14,7 @@ const navLinks = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav
@@ -53,6 +55,13 @@ export default function Navbar() {
         {/* Desktop icons */}
         <div className="hidden md:flex items-center gap-3">
           <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="w-9 h-9 rounded-lg border border-green-800/30 bg-green-900/20 flex items-center justify-center text-gray-400 hover:text-green-300 transition-colors cursor-pointer"
+          >
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+          <button
             aria-label="Notifications"
             className="w-9 h-9 rounded-lg border border-green-800/30 bg-green-900/20 flex items-center justify-center text-gray-400 hover:text-green-300 transition-colors"
           >
@@ -74,16 +83,25 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          id="mobile-menu-toggle"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          className="md:hidden w-9 h-9 rounded-lg border border-green-800/30 bg-green-900/20 flex items-center justify-center text-gray-400 hover:text-green-300 transition-colors"
-          onClick={() => setOpen(o => !o)}
-        >
-          {open ? <X size={18} /> : <Menu size={18} />}
-        </button>
+        {/* Mobile controls */}
+        <div className="flex items-center md:hidden gap-2">
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="w-9 h-9 rounded-lg border border-green-800/30 bg-green-900/20 flex items-center justify-center text-gray-400 hover:text-green-300 transition-colors cursor-pointer"
+          >
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+          <button
+            id="mobile-menu-toggle"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            className="w-9 h-9 rounded-lg border border-green-800/30 bg-green-900/20 flex items-center justify-center text-gray-400 hover:text-green-300 transition-colors"
+            onClick={() => setOpen(o => !o)}
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
 
       {/* ── Mobile drawer ── */}
