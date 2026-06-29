@@ -1,0 +1,678 @@
+{
+	"info": {
+		"_postman_id": "416be2f9-7157-4183-bc8e-d933e4b78db1",
+		"name": "AgriChat Advisory REST API",
+		"description": "Postman Collection for AgriChat agricultural advisory REST API. Supports full CRUD operations, filters, query search, metrics stats, custom error handling responses, and auto-generated AI advice fallback.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Retrieve API version, health status, and interactive documentation URLs."
+			},
+			"response": [
+				{
+					"name": "Successful Health Status",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"app\": \"AgriChat Advisory API\",\n    \"version\": \"1.0.0\",\n    \"status\": \"healthy\",\n    \"docs_url\": \"/docs\"\n}"
+				}
+			]
+		},
+		{
+			"name": "POST Create Advisory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"region\": \"Kumaon\",\n    \"severity\": \"Medium\",\n    \"status\": \"Draft\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/advisories/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						""
+					]
+				},
+				"description": "Create a new advisory entry. Omitting the `advice` property triggers the backend to automatically query the Google Gemini API to generate professional agricultural recommendations."
+			},
+			"response": [
+				{
+					"name": "Created Advisory Successful",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"region\": \"Kumaon\",\n    \"severity\": \"Medium\",\n    \"status\": \"Draft\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/advisories/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								""
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"advice\": \"Apply organic compost and ensure proper drainage in hillside beds.\",\n    \"region\": \"Kumaon\",\n    \"severity\": \"Medium\",\n    \"status\": \"Draft\",\n    \"created_at\": \"2026-06-29T12:00:00Z\",\n    \"updated_at\": \"2026-06-29T12:00:00Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GET List Advisories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/advisories/?skip=0&limit=10&crop=Potato&region=Kumaon",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						""
+					],
+					"query": [
+						{
+							"key": "skip",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "crop",
+							"value": "Potato"
+						},
+						{
+							"key": "region",
+							"value": "Kumaon"
+						}
+					]
+				},
+				"description": "Fetch list of advisories. Supports pagination and filters by crop, region, and severity."
+			},
+			"response": [
+				{
+					"name": "Successful List Retrieval",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/advisories/?skip=0&limit=10&crop=Potato&region=Kumaon",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								""
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "crop",
+									"value": "Potato"
+								},
+								{
+									"key": "region",
+									"value": "Kumaon"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": 1,\n        \"crop\": \"Potato\",\n        \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n        \"advice\": \"Apply organic compost and ensure proper drainage in hillside beds.\",\n        \"region\": \"Kumaon\",\n        \"severity\": \"Medium\",\n        \"status\": \"Draft\",\n        \"created_at\": \"2026-06-29T12:00:00Z\",\n        \"updated_at\": \"2026-06-29T12:00:00Z\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "GET Search Advisories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/advisories/search?q=curling",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "curling"
+						}
+					]
+				},
+				"description": "Perform full case-insensitive keyword search on crop, query, advice, or region fields."
+			},
+			"response": [
+				{
+					"name": "Successful Search Matches",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/advisories/search?q=curling",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "curling"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": 1,\n        \"crop\": \"Potato\",\n        \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n        \"advice\": \"Apply organic compost and ensure proper drainage in hillside beds.\",\n        \"region\": \"Kumaon\",\n        \"severity\": \"Medium\",\n        \"status\": \"Draft\",\n        \"created_at\": \"2026-06-29T12:00:00Z\",\n        \"updated_at\": \"2026-06-29T12:00:00Z\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "GET Advisory Stats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/advisories/stats",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						"stats"
+					]
+				},
+				"description": "Retrieve general count metrics and breakdowns grouped by crop, region, and severity."
+			},
+			"response": [
+				{
+					"name": "Successful Statistics Retrieval",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/advisories/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								"stats"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"total_count\": 1,\n    \"by_crop\": {\n        \"Potato\": 1\n    },\n    \"by_region\": {\n        \"Kumaon\": 1\n    },\n    \"by_severity\": {\n        \"Medium\": 1\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "GET Single Advisory",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/advisories/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						"1"
+					]
+				},
+				"description": "Retrieve details of a single advisory by its ID."
+			},
+			"response": [
+				{
+					"name": "Successful Single Retrieval",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/advisories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"advice\": \"Apply organic compost and ensure proper drainage in hillside beds.\",\n    \"region\": \"Kumaon\",\n    \"severity\": \"Medium\",\n    \"status\": \"Draft\",\n    \"created_at\": \"2026-06-29T12:00:00Z\",\n    \"updated_at\": \"2026-06-29T12:00:00Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "PUT Update Advisory",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"advice\": \"Spray copper oxychloride fungicide immediately to prevent blight spreading.\",\n    \"region\": \"Almora\",\n    \"severity\": \"High\",\n    \"status\": \"Resolved\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/advisories/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						"1"
+					]
+				},
+				"description": "Perform full update on an existing advisory."
+			},
+			"response": [
+				{
+					"name": "Successful Update",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"advice\": \"Spray copper oxychloride fungicide immediately to prevent blight spreading.\",\n    \"region\": \"Almora\",\n    \"severity\": \"High\",\n    \"status\": \"Resolved\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/advisories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"advice\": \"Spray copper oxychloride fungicide immediately to prevent blight spreading.\",\n    \"region\": \"Almora\",\n    \"severity\": \"High\",\n    \"status\": \"Resolved\",\n    \"created_at\": \"2026-06-29T12:00:00Z\",\n    \"updated_at\": \"2026-06-29T12:15:00Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "PATCH Partial Update Advisory",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"severity\": \"Medium\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/advisories/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						"1"
+					]
+				},
+				"description": "Perform partial update of fields."
+			},
+			"response": [
+				{
+					"name": "Successful Patch",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"severity\": \"Medium\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/advisories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"crop\": \"Potato\",\n    \"query\": \"My potato crop leaves have yellow spots and are curling.\",\n    \"advice\": \"Spray copper oxychloride fungicide immediately to prevent blight spreading.\",\n    \"region\": \"Almora\",\n    \"severity\": \"Medium\",\n    \"status\": \"Resolved\",\n    \"created_at\": \"2026-06-29T12:00:00Z\",\n    \"updated_at\": \"2026-06-29T12:20:00Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "DELETE Advisory",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/advisories/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						"1"
+					]
+				},
+				"description": "Remove an advisory record by ID."
+			},
+			"response": [
+				{
+					"name": "Successful Deletion",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/advisories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								"1"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "GET Single Advisory - 404 Error",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/advisories/9999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						"9999"
+					]
+				},
+				"description": "Demonstrates the 404 Custom Exception Handling response for non-existent advisory IDs."
+			},
+			"response": [
+				{
+					"name": "Advisory Not Found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/advisories/9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								"9999"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": {\n        \"status_code\": 404,\n        \"message\": \"Advisory with ID 9999 not found\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "POST Create Advisory - 422 Error",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"crop\": \"P\",\n    \"query\": \"Short\",\n    \"region\": \"Garhwal\",\n    \"severity\": \"Extreme\",\n    \"status\": \"Draft\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/advisories/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"advisories",
+						""
+					]
+				},
+				"description": "Demonstrates the 422 Custom Exception Handling response for field validation schema violations."
+			},
+			"response": [
+				{
+					"name": "Validation Error Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"crop\": \"P\",\n    \"query\": \"Short\",\n    \"region\": \"Garhwal\",\n    \"severity\": \"Extreme\",\n    \"status\": \"Draft\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/advisories/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"advisories",
+								""
+							]
+						}
+					},
+					"status": "Unprocessable Entity",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": {\n        \"status_code\": 422,\n        \"message\": \"Validation failed for one or more request fields.\",\n        \"details\": [\n            {\n                \"field\": \"body -> crop\",\n                \"issue\": \"String should have at least 2 characters\"\n            },\n            {\n                \"field\": \"body -> severity\",\n                \"issue\": \"String should match pattern '^\\\\(Low\\\\|Medium\\\\|High\\\\)$'\"\n            }\n        ]\n    }\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	]
+}

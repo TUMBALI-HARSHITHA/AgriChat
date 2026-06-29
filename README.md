@@ -27,6 +27,52 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
+## ⚙️ Backend Quick Start (FastAPI)
+
+Follow these steps to run the backend API locally.
+
+### 1. Set up a Python Virtual Environment
+Navigate to the `backend` folder and create a virtual environment:
+```bash
+cd backend
+python -m venv .venv
+```
+
+Activate the virtual environment:
+- **Windows (PowerShell)**:
+  ```powershell
+  .venv\Scripts\Activate.ps1
+  ```
+- **Windows (CMD)**:
+  ```cmd
+  .venv\Scripts\activate.bat
+  ```
+- **macOS / Linux**:
+  ```bash
+  source .venv/bin/activate
+  ```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Set Up Environment Variables
+Create a `.env` file in the `backend/` directory:
+```bash
+cp .env.example .env
+# Edit .env and configure your variables (e.g. database path, optional Gemini API key)
+```
+
+### 4. Run the API Server
+```bash
+uvicorn app.main:app --reload
+```
+
+The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can view the interactive Swagger documentation at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+
+---
+
 ## 🧩 Components
 
 | Component | Path | Description |

@@ -96,44 +96,102 @@ export default function Chat() {
     setError(null);
 
     try {
-      if (!GEMINI_API_KEY) {
-        throw new Error('VITE_GEMINI_API_KEY not set. Add it to your .env file.');
-      }
+      let aiText = '';
+      let backendSuccess = false;
 
-      const history = messages
-        .filter((m) => m.role !== 'assistant' || messages.indexOf(m) !== 0)
-        .map((m) => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: m.content }],
-        }));
+      // Attempt to query the local FastAPI backend
+      try {
+        let crop = "General";
+        const queryLower = trimmed.toLowerCase();
+        const crops = ["potato", "wheat", "rajma", "beans", "millet", "mustard", "ginger", "turmeric", "onion", "garlic", "rice", "apple"];
+        for (const c of crops) {
+          if (queryLower.includes(c)) {
+            crop = c.charAt(0).toUpperCase() + c.slice(1);
+            break;
+          }
+        }
 
-      history.push({ role: 'user', parts: [{ text: trimmed }] });
+        let region = "Uttarakhand";
+        const regions = ["kumaon", "garhwal", "almora", "nainital", "dehradun", "haridwar", "chamoli", "pithoragarh"];
+        for (const r of regions) {
+          if (queryLower.includes(r)) {
+            region = r.charAt(0).toUpperCase() + r.slice(1);
+            break;
+          }
+        }
 
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-        {
+        let severity = "Medium";
+        if (queryLower.includes("severe") || queryLower.includes("urgent") || queryLower.includes("critical") || queryLower.includes("dying") || queryLower.includes("rust") || queryLower.includes("rot")) {
+          severity = "High";
+        } else if (queryLower.includes("mild") || queryLower.includes("small") || queryLower.includes("low")) {
+          severity = "Low";
+        }
+
+        const backendResponse = await fetch("http://127.0.0.1:8000/api/advisories/", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            contents: history,
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 1024,
-            },
-          }),
-        }
-      );
+            crop,
+            query: trimmed,
+            region,
+            severity,
+            status: "Draft"
+          })
+        });
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error?.message || `HTTP ${response.status}`);
+        if (backendResponse.ok) {
+          const backendData = await backendResponse.json();
+          aiText = backendData.advice;
+          backendSuccess = true;
+          console.log("Advice generated successfully from local FastAPI backend.");
+        } else {
+          console.warn(`FastAPI backend returned status ${backendResponse.status}, falling back to direct Gemini API.`);
+        }
+      } catch (backendErr) {
+        console.warn("FastAPI backend is offline, falling back to direct Gemini API:", backendErr);
       }
 
-      const data = await response.json();
-      const aiText =
-        data.candidates?.[0]?.content?.parts?.[0]?.text ||
-        'Sorry, I could not generate a response. Please try again.';
+      // Fallback: Direct Gemini API query from client-side if backend fails or is down
+      if (!backendSuccess) {
+        if (!GEMINI_API_KEY) {
+          throw new Error('VITE_GEMINI_API_KEY not set and local backend is offline. Please configure your key or start the backend.');
+        }
+
+        const history = messages
+          .filter((m) => m.role !== 'assistant' || messages.indexOf(m) !== 0)
+          .map((m) => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.content }],
+          }));
+
+        history.push({ role: 'user', parts: [{ text: trimmed }] });
+
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+              contents: history,
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 1024,
+              },
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error?.message || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        aiText =
+          data.candidates?.[0]?.content?.parts?.[0]?.text ||
+          'Sorry, I could not generate a response. Please try again.';
+      }
 
       setMessages((prev) => [
         ...prev,

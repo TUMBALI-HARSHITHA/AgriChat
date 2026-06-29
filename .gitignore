@@ -28,3 +28,16 @@ wireframes/
 *.njsproj
 *.sln
 *.sw?
+
+# Python & Backend
+__pycache__/
+.venv/
+backend/.env
+backend/.venv/
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/routers/__pycache__/
+*.db
+*.db-journal
+*.log
+

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W4 Frontend-Backend Connection Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+            background-color: #f4f6f9;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #e1e8ed;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        .meta-info {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .meta-info strong {
+            color: #34495e;
+        }
+        .section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+        h2 {
+            color: #16a085;
+            font-size: 20px;
+            border-left: 4px solid #16a085;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        .screenshot-container {
+            border: 1px solid #dcdde1;
+            border-radius: 6px;
+            padding: 10px;
+            background: #fafbfc;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .screenshot-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        .caption {
+            font-style: italic;
+            color: #555;
+            font-size: 14px;
+            margin-top: 10px;
+            display: block;
+        }
+        @media print {
+            body {
+                background-color: #ffffff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌿 AgriChat — Frontend-Backend Connection Demo</h1>
+            <div class="meta-info">
+                Intern ID: <strong>TBI-26101291</strong> &nbsp;|&nbsp; 
+                Date: <strong>June 29, 2026</strong> &nbsp;|&nbsp; 
+                Project: <strong>Uttarakhand AI Agricultural Advisory Chatbot</strong>
+            </div>
+        </div>
+
+        <!-- Screenshot 1 -->
+        <div class="section">
+            <h2>Scenario 1: Potato Disease Advisory</h2>
+            <div class="screenshot-container">
+                <img src="screenshot1.png" alt="Screenshot 1: Potato Disease Advisory UI">
+                <span class="caption">Figure 1: AgriChat interface displaying a user query regarding potato crop leaf curling and yellowing. The system successfully communicates with the FastAPI backend, which invokes the Google Gemini API to return diagnostic advice.</span>
+            </div>
+        </div>
+
+        <!-- Screenshot 2 -->
+        <div class="section">
+            <h2>Scenario 2: Bean Aphids Advisory</h2>
+            <div class="screenshot-container">
+                <img src="screenshot2.png" alt="Screenshot 2: Bean Aphids Organic Treatment UI">
+                <span class="caption">Figure 2: AgriChat interface displaying a query about organic remedies for aphids on beans, showing step-by-step guidance loaded from the FastAPI local server database response.</span>
+            </div>
+        </div>
+
+        <!-- Screenshot 3 -->
+        <div class="section">
+            <h2>Network Tab Verification</h2>
+            <div class="screenshot-container">
+                <img src="network.png" alt="Screenshot 3: DevTools Network Tab showing status 200/201">
+                <span class="caption">Figure 3: Chrome DevTools Network Tab illustrating a successful HTTP POST request to the local API endpoint (http://127.0.0.1:8000/api/advisories/) returning a status code of 201 Created/200 OK.</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

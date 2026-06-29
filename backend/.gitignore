@@ -1,0 +1,20 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Local env files
+.env
+
+# Databases
+*.db
+*.db-journal
+
+# Logs
+*.log
