@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sprout, Menu, X, MessageSquareText, User, Bell, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { Button, Modal } from './ui';
 
 const navLinks = [
   { label: 'Home',      path: '/' },
@@ -37,17 +38,35 @@ export default function Navbar() {
     return () => window.removeEventListener('storage', checkUser);
   }, []);
 
-  const logout = () => {
-    localStorage.removeItem('agrichat_token');
-    localStorage.removeItem('agrichat_user');
-    setUser(null);
-    window.dispatchEvent(new Event('storage'));
-    navigate('/');
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleSignOutClick = () => {
+    setIsConfirmOpen(true);
   };
 
-  const logoutMobile = () => {
-    logout();
+  const handleSignOutChoice = (permanent) => {
+    if (permanent) {
+      localStorage.removeItem('agrichat_token');
+      localStorage.removeItem('agrichat_user');
+      localStorage.removeItem('agrichat_remembered_email');
+    } else {
+      const storedUser = localStorage.getItem('agrichat_user');
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          if (parsed.email) {
+            localStorage.setItem('agrichat_remembered_email', parsed.email);
+          }
+        } catch (e) {}
+      }
+      localStorage.removeItem('agrichat_token');
+      localStorage.removeItem('agrichat_user');
+    }
+    setUser(null);
+    window.dispatchEvent(new Event('storage'));
+    setIsConfirmOpen(false);
     setOpen(false);
+    navigate('/');
   };
 
   const links = user 
@@ -118,7 +137,7 @@ export default function Navbar() {
                 👤 {user.name}
               </span>
               <button
-                onClick={logout}
+                onClick={handleSignOutClick}
                 className="px-3 py-1.5 rounded-lg border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/20 text-xs font-medium cursor-pointer transition-colors"
               >
                 Sign Out
@@ -191,7 +210,7 @@ export default function Navbar() {
             </Link>
             {user ? (
               <button
-                onClick={logoutMobile}
+                onClick={handleSignOutClick}
                 className="flex-1 py-2.5 rounded-lg border border-red-700/40 bg-red-950/20 text-red-400 text-sm font-medium flex items-center justify-center gap-2 cursor-pointer"
               >
                 Sign Out
@@ -208,6 +227,33 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        title="Confirm Sign Out"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-400 text-sm">
+            Do you want to sign out permanently?
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <Button
+              variant="danger"
+              onClick={() => handleSignOutChoice(true)}
+              className="flex-grow w-full"
+            >
+              Sign Out Permanently
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => handleSignOutChoice(false)}
+              className="flex-grow w-full border border-green-800/40 text-green-300"
+            >
+              Sign Out Temporarily
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </nav>
   );
 }

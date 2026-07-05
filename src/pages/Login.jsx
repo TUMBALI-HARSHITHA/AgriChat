@@ -8,7 +8,10 @@ export default function Login() {
   const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const [form, setForm]         = useState({ name: '', email: '', password: '' });
+  const [form, setForm]         = useState(() => {
+    const remembered = localStorage.getItem('agrichat_remembered_email') || '';
+    return { name: '', email: remembered, password: '' };
+  });
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState('');
   const [isForgotOpen, setIsForgotOpen] = useState(false);
