@@ -51,6 +51,77 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedQuery, setSelectedQuery] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [editSeverity, setEditSeverity] = useState('');
+  const [originalSeverity, setOriginalSeverity] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (selectedQuery) {
+      const adv = advisories.find(a => a.id === selectedQuery.id);
+      if (adv) {
+        setOriginalSeverity(adv.severity);
+        setEditSeverity(adv.severity);
+      }
+    }
+  }, [selectedQuery, advisories]);
+
+  const saveSeverity = async () => {
+    const token = localStorage.getItem('agrichat_token');
+    if (!token || !selectedQuery) return;
+    setSaving(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/advisories/${selectedQuery.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ severity: editSeverity })
+      });
+      if (response.ok) {
+        const updated = await response.json();
+        setAdvisories(prev => prev.map(a => a.id === updated.id ? updated : a));
+        const { tag, color } = getTagAndColor(updated);
+        setSelectedQuery(prev => ({
+          ...prev,
+          tag,
+          tagColor: color,
+          details: {
+            ...prev.details,
+            cause: `Agricultural diagnosis for ${updated.crop} in ${updated.region} (${updated.severity} severity).`
+          }
+        }));
+      }
+    } catch (e) {
+      console.warn("Failed to update advisory severity:", e);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteAdvisory = async () => {
+    const token = localStorage.getItem('agrichat_token');
+    if (!token || !selectedQuery) return;
+    if (!window.confirm("Are you sure you want to permanently delete this advisory record?")) return;
+    setDeleting(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/advisories/${selectedQuery.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setAdvisories(prev => prev.filter(a => a.id !== selectedQuery.id));
+        setSelectedQuery(null);
+      }
+    } catch (e) {
+      console.warn("Failed to delete advisory:", e);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -252,6 +323,14 @@ export default function Dashboard() {
         title={selectedQuery ? `${selectedQuery.title} — Advisory Details` : 'Advisory Details'}
         footer={
           <>
+            <Button
+              variant="danger"
+              onClick={deleteAdvisory}
+              isLoading={deleting}
+              className="mr-auto border border-red-700/40"
+            >
+              Delete Record
+            </Button>
             <Button variant="ghost" onClick={() => setSelectedQuery(null)}>Close</Button>
             <Button variant="primary" onClick={() => { setSelectedQuery(null); navigate('/chat'); }}>
               <MessageSquareText size={15} className="mr-1.5" /> Continue to Chat
@@ -262,17 +341,46 @@ export default function Dashboard() {
         {selectedQuery && (
           <div className="flex flex-col gap-5 text-left">
             {/* Header Badge */}
-            <div className="flex items-center gap-3">
-              <span className="text-3xl select-none">{selectedQuery.image}</span>
-              <div>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border 
-                  ${selectedQuery.tagColor === 'red' ? 'bg-red-950/40 text-red-400 border-red-800/30' : ''}
-                  ${selectedQuery.tagColor === 'amber' ? 'bg-amber-950/40 text-amber-400 border-amber-800/30' : ''}
-                  ${selectedQuery.tagColor === 'green' ? 'bg-green-950/40 text-green-400 border-green-800/30' : ''}
-                `}>
-                  {selectedQuery.tag}
-                </span>
-                <p className="text-xs text-gray-500 mt-2">{selectedQuery.description.split(' — ')[0]}</p>
+            <div className="flex items-center justify-between gap-3 w-full">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl select-none">{selectedQuery.image}</span>
+                <div>
+                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border 
+                    ${selectedQuery.tagColor === 'red' ? 'bg-red-950/40 text-red-400 border-red-800/30' : ''}
+                    ${selectedQuery.tagColor === 'amber' ? 'bg-amber-950/40 text-amber-400 border-amber-800/30' : ''}
+                    ${selectedQuery.tagColor === 'green' ? 'bg-green-950/40 text-green-400 border-green-800/30' : ''}
+                  `}>
+                    {selectedQuery.tag}
+                  </span>
+                  <p className="text-xs text-gray-500 mt-2">{selectedQuery.description.split(' — ')[0]}</p>
+                </div>
+              </div>
+
+              {/* Severity Editor */}
+              <div className="flex flex-col gap-1 text-right">
+                <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Severity Level</label>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={editSeverity}
+                    onChange={(e) => setEditSeverity(e.target.value)}
+                    className="bg-green-900/10 dark:bg-green-950/30 text-green-800 dark:text-green-300 border border-green-800/30 dark:border-green-800/50 rounded-xl px-2.5 py-1.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                  >
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                  {editSeverity !== originalSeverity && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={saveSeverity}
+                      isLoading={saving}
+                      className="text-xs py-1.5 px-3"
+                    >
+                      Save
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
 
