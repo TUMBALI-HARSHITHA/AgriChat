@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sprout, Eye, EyeOff, Mail, Lock, ArrowRight, LogIn, User } from 'lucide-react';
 import { Button, Input, Modal } from '../components/ui';
+import { API_BASE_URL } from '../config';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function Login() {
     setResetError('');
     setResetSuccess('');
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/reset-password', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ export default function Login() {
     try {
       if (isRegister) {
         // 1. Call Register endpoint
-        const registerRes = await fetch('http://127.0.0.1:8000/api/auth/register', {
+        const registerRes = await fetch(`${API_BASE_URL}/api/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -82,7 +83,7 @@ export default function Login() {
       }
 
       // 2. Call Login endpoint (auto-login after registration)
-      const loginRes = await fetch('http://127.0.0.1:8000/api/auth/login', {
+      const loginRes = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

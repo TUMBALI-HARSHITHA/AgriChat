@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Sprout, RotateCcw, AlertTriangle, Bot, User } from 'lucide-react';
 import { Button, Modal, Toast, Loader } from '../components/ui';
+import { API_BASE_URL } from '../config';
 
 const SYSTEM_PROMPT = `You are AgriChat, an expert agricultural advisor specializing in Uttarakhand's mountain crops and farming practices. 
 You ONLY answer questions related to:
@@ -91,7 +92,7 @@ export default function Chat() {
       if (!token) return;
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/advisories/", {
+        const response = await fetch(`${API_BASE_URL}/api/advisories/`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -171,7 +172,7 @@ export default function Chat() {
           headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const backendResponse = await fetch("http://127.0.0.1:8000/api/advisories/", {
+        const backendResponse = await fetch(`${API_BASE_URL}/api/advisories/`, {
           method: 'POST',
           headers,
           body: JSON.stringify({
@@ -272,7 +273,7 @@ export default function Chat() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8000/api/advisories/", {
+      await fetch(`${API_BASE_URL}/api/advisories/`, {
         method: 'DELETE',
         headers
       });

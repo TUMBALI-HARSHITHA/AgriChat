@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { MessageSquareText, Leaf, TrendingUp, AlertCircle, ArrowRight, Clock, Sprout } from 'lucide-react';
 import Card from '../components/Card';
 import { Button, Modal } from '../components/ui';
+import { API_BASE_URL } from '../config';
 
 const colorMap = {
   green:  'bg-green-900/30  border-green-700/20  text-green-400',
@@ -62,7 +63,7 @@ export default function Dashboard() {
       setIsLoggedIn(true);
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/advisories/", {
+        const response = await fetch(`${API_BASE_URL}/api/advisories/`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
