@@ -48,3 +48,32 @@ class AdvisoryStats(BaseModel):
     by_crop: Dict[str, int]
     by_region: Dict[str, int]
     by_severity: Dict[str, int]
+
+class UserCreate(BaseModel):
+    email: str = Field(..., min_length=5, max_length=100)
+    name: str = Field(..., min_length=2, max_length=100)
+    password: str = Field(..., min_length=6)
+    role: Optional[str] = Field(default="Supervisor")
+
+class UserLogin(BaseModel):
+    email: str = Field(..., min_length=5, max_length=100)
+    password: str = Field(..., min_length=6)
+
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    name: str
+    role: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class LoginResponse(BaseModel):
+    token: str
+    token_type: str = "bearer"
+    user: UserResponse
+
+class PasswordReset(BaseModel):
+    email: str = Field(..., min_length=5, max_length=100)
+    name: str = Field(..., min_length=2, max_length=100)
+    new_password: str = Field(..., min_length=6)

@@ -1,75 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { MessageSquareText, Leaf, TrendingUp, AlertCircle, ArrowRight, Clock, Sprout } from 'lucide-react';
 import Card from '../components/Card';
 import { Button, Modal } from '../components/ui';
-
-const recentQueries = [
-  {
-    image: '🫘',
-    tag: 'Disease',
-    tagColor: 'red',
-    title: 'Bean yellow mosaic treatment',
-    description: 'Asked 2 hours ago — Aphid-transmitted viral disease. Recommended: remove infected plants, apply neem oil spray.',
-    actionLabel: 'View details',
-    details: {
-      symptoms: 'Yellow mosaic patterns, leaf curling, and stunted growth in beans (Rajma).',
-      cause: 'Aphid-transmitted Bean Yellow Mosaic Virus (BYMV).',
-      treatment: [
-        'Uproot and destroy heavily infected plants immediately to prevent spread.',
-        'Spray neem oil (2-3 ml per litre of water) to control aphid vector population.',
-        'Use disease-resistant certified seeds for subsequent sowing seasons.',
-        'Maintain weed-free boundaries as weeds act as alternate hosts for aphids.'
-      ],
-      safetyWarning: 'Do not use chemical insecticides during active pollinator hours to protect honeybees.'
-    }
-  },
-  {
-    image: '🥔',
-    tag: 'Pest Control',
-    tagColor: 'amber',
-    title: 'Late blight in potato crop',
-    description: 'Asked yesterday — Recommended copper-based fungicide (Bordeaux mixture) and improved drainage.',
-    actionLabel: 'View details',
-    details: {
-      symptoms: 'Water-soaked purplish-brown lesions on leaves, white cottony growth on the underside under high humidity.',
-      cause: 'Phytophthora infestans (fungus-like oomycete pathogen).',
-      treatment: [
-        'Apply Bordeaux mixture (1%) or Copper Oxychloride (3g/L of water) as a preventative spray.',
-        'Improve drainage in the potato field beds; water stagnation accelerates spore multiplication.',
-        'Avoid overhead sprinkler irrigation; prefer furrow/drip irrigation to keep leaves dry.',
-        'Destroy infected haulms (stems/leaves) 10 days before harvesting tubers.'
-      ],
-      safetyWarning: 'Apply fungicide treatments on dry wind-free mornings for optimal leaf absorption.'
-    }
-  },
-  {
-    image: '🌾',
-    tag: 'Planning',
-    tagColor: 'green',
-    title: 'Rabi wheat sowing window',
-    description: 'Asked 3 days ago — Optimal window: Oct 15–Nov 5 for mid-Himalayan zones above 1200m.',
-    actionLabel: 'View details',
-    details: {
-      symptoms: 'Query regarding regional sowing schedule and soil preparation tips.',
-      cause: 'Seasonal calendar planning advice for mid-Himalayan region.',
-      treatment: [
-        'Optimal sowing window: October 15 to November 5 for heights above 1200m (cool mountain climate).',
-        'Incorporate well-decomposed Farm Yard Manure (FYM) or compost at 10-12 tonnes/hectare during final tillage.',
-        'Treat seed with Azotobacter and PSB cultures (20g each per kg seed) to enhance nutrient availability.',
-        'Maintain sowing depth of 4-5 cm with row spacing of 20-22 cm.'
-      ],
-      safetyWarning: 'Late sowing after late November reduces grain yield by 1-1.5% per day due to early summer heat.'
-    }
-  },
-];
-
-const quickStats = [
-  { icon: <MessageSquareText size={20} />, label: 'Total Queries', value: '24', color: 'green' },
-  { icon: <Leaf              size={20} />, label: 'Crops Covered', value: '8',  color: 'blue'  },
-  { icon: <TrendingUp        size={20} />, label: 'This Week',     value: '7',  color: 'purple'},
-  { icon: <AlertCircle       size={20} />, label: 'Disease Alerts',value: '2',  color: 'amber' },
-];
 
 const colorMap = {
   green:  'bg-green-900/30  border-green-700/20  text-green-400',
@@ -78,9 +11,135 @@ const colorMap = {
   amber:  'bg-amber-900/30  border-amber-700/20  text-amber-400',
 };
 
+const getCropEmoji = (crop) => {
+  if (!crop) return '🌱';
+  const lower = crop.toLowerCase();
+  if (lower.includes('potato')) return '🥔';
+  if (lower.includes('wheat')) return '🌾';
+  if (lower.includes('bean') || lower.includes('rajma')) return '🫘';
+  if (lower.includes('mustard')) return '🌱';
+  if (lower.includes('ginger')) return '🫚';
+  if (lower.includes('turmeric')) return '💛';
+  return '🌱';
+};
+
+const getTagAndColor = (a) => {
+  if (a.severity === 'High') return { tag: 'Disease Alert', color: 'red' };
+  if (a.severity === 'Medium') return { tag: 'Pest Control', color: 'amber' };
+  return { tag: 'Planning', color: 'green' };
+};
+
+const getTimeAgo = (dateStr) => {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now - date;
+  if (isNaN(diffMs) || diffMs < 0) return 'recently';
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  if (diffMins < 1) return 'just now';
+  if (diffMins < 60) return `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 1) return 'yesterday';
+  return `${diffDays} days ago`;
+};
+
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [advisories, setAdvisories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedQuery, setSelectedQuery] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      const token = localStorage.getItem('agrichat_token');
+      if (!token) {
+        setIsLoggedIn(false);
+        setLoading(false);
+        return;
+      }
+      setIsLoggedIn(true);
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/advisories/", {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setAdvisories(data);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch dashboard data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  // Compute dynamic stats
+  const totalQueries = isLoggedIn ? advisories.length : 0;
+
+  const uniqueCrops = isLoggedIn
+    ? new Set(advisories.map(a => a.crop.toLowerCase()).filter(Boolean)).size
+    : 0;
+
+  const thisWeekQueries = isLoggedIn
+    ? advisories.filter(a => {
+        const createdDate = new Date(a.created_at);
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        return createdDate >= sevenDaysAgo;
+      }).length
+    : 0;
+
+  const diseaseAlerts = isLoggedIn
+    ? advisories.filter(a => a.severity === 'High').length
+    : 0;
+
+  const quickStats = [
+    { icon: <MessageSquareText size={20} />, label: 'Total Queries', value: String(totalQueries), color: 'green' },
+    { icon: <Leaf              size={20} />, label: 'Crops Covered', value: String(uniqueCrops),  color: 'blue'  },
+    { icon: <TrendingUp        size={20} />, label: 'This Week',     value: String(thisWeekQueries),  color: 'purple'},
+    { icon: <AlertCircle       size={20} />, label: 'Disease Alerts',value: String(diseaseAlerts),  color: 'amber' },
+  ];
+
+  // Map newest 3 queries for layout
+  const sortedAdvisories = [...advisories].sort((a, b) => b.id - a.id);
+  const displayQueries = sortedAdvisories.slice(0, 3);
+
+  const formattedRecentQueries = displayQueries.map(a => {
+    const { tag, color } = getTagAndColor(a);
+    const timeAgo = getTimeAgo(a.created_at);
+    
+    // Derive a clean ChatGPT-like title
+    const words = a.query.split(' ');
+    const title = words.length > 5 ? words.slice(0, 5).join(' ') + '...' : a.query;
+
+    const treatment = a.advice.split('\n')
+      .map(line => line.replace(/^[-*]\s*/, '').trim())
+      .filter(line => line.length > 0 && !line.startsWith('⚠️'));
+
+    return {
+      id: a.id,
+      image: getCropEmoji(a.crop),
+      tag: tag,
+      tagColor: color,
+      title: title,
+      description: `Asked ${timeAgo} — ${a.crop} query in ${a.region}`,
+      actionLabel: 'View details',
+      details: {
+        symptoms: a.query,
+        cause: `Agricultural diagnosis for ${a.crop} in ${a.region} (${a.severity} severity).`,
+        treatment: treatment.slice(0, 4),
+        safetyWarning: 'Always verify critical decisions with a licensed agricultural extension officer.'
+      }
+    };
+  });
 
   return (
     <div className="min-h-screen w-full page-enter flex flex-col items-center" style={{ paddingTop: '120px', paddingBottom: '96px' }}>
@@ -104,7 +163,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center justify-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center justify-center w-full">
           {quickStats.map(s => (
             <div
               key={s.label}
@@ -131,16 +190,40 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          {/* cards — 1 col → 3 col (centered) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 md:gap-10 justify-items-center justify-center">
-            {recentQueries.map((q, i) => (
-              <Card 
-                key={i} 
-                {...q} 
-                onClick={() => setSelectedQuery(q)}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-10 w-full">
+              <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : !isLoggedIn ? (
+            <div className="glass rounded-3xl p-8 border border-green-900/30 text-center w-full max-w-xl mx-auto shadow-xl">
+              <p className="text-gray-400 text-sm mb-5">
+                You are not logged in. Please sign in or register to store and review your custom advisory dashboard.
+              </p>
+              <Button variant="primary" onClick={() => navigate('/login')} className="mx-auto">
+                Sign In / Register
+              </Button>
+            </div>
+          ) : formattedRecentQueries.length === 0 ? (
+            <div className="glass rounded-3xl p-8 border border-green-900/30 text-center w-full max-w-xl mx-auto shadow-xl">
+              <p className="text-gray-400 text-sm mb-5">
+                No crop queries recorded yet. Start a conversation with AgriChat to consult our expert agricultural AI!
+              </p>
+              <Button variant="primary" onClick={() => navigate('/chat')} className="mx-auto">
+                Start Chatting
+              </Button>
+            </div>
+          ) : (
+            /* cards — 1 col → 3 col (centered) */
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 md:gap-10 justify-items-center justify-center w-full">
+              {formattedRecentQueries.map((q, i) => (
+                <Card 
+                  key={i} 
+                  {...q} 
+                  onClick={() => setSelectedQuery(q)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* ── Tip strip ── */}
@@ -206,11 +289,15 @@ export default function Dashboard() {
               </div>
               <div>
                 <h4 className="font-bold text-white mb-1">Recommended Action Steps:</h4>
-                <ul className="list-disc pl-5 space-y-2 text-gray-300">
-                  {selectedQuery.details.treatment.map((step, idx) => (
-                    <li key={idx} className="leading-relaxed">{step}</li>
-                  ))}
-                </ul>
+                {selectedQuery.details.treatment.length > 0 ? (
+                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
+                    {selectedQuery.details.treatment.map((step, idx) => (
+                      <li key={idx} className="leading-relaxed">{step}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-300">Consult advisor details in the chat feed.</p>
+                )}
               </div>
             </div>
 

@@ -102,9 +102,15 @@ def get_advisories(
     limit: int = 100,
     crop: str | None = None,
     region: str | None = None,
-    severity: str | None = None
+    severity: str | None = None,
+    created_by_id: int | None = None
 ):
     query = db.query(Advisory)
+    if created_by_id is not None:
+        query = query.filter(Advisory.created_by_id == created_by_id)
+    else:
+        query = query.filter(Advisory.created_by_id.is_(None))
+        
     if crop:
         query = query.filter(Advisory.crop.ilike(f"%{crop}%"))
     if region:
@@ -127,7 +133,7 @@ def search_advisories(db: Session, search_query: str, skip: int = 0, limit: int 
     ).offset(skip).limit(limit).all()
 
 # Create
-def create_advisory(db: Session, advisory: AdvisoryCreate):
+def create_advisory(db: Session, advisory: AdvisoryCreate, created_by_id: int | None = None):
     advice = advisory.advice
     if not advice or advice.strip() == "":
         advice = generate_agricultural_advice(advisory.crop, advisory.query, advisory.region)
@@ -138,8 +144,9 @@ def create_advisory(db: Session, advisory: AdvisoryCreate):
         advice=advice,
         region=advisory.region,
         severity=advisory.severity,
-        status=advisory.status
-    )
+        status=advisory.status,
+        created_by_id=created_by_id
+     )
     db.add(db_advisory)
     db.commit()
     db.refresh(db_advisory)

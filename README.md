@@ -73,6 +73,61 @@ The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000). You
 
 ---
 
+## 🗄️ Database Integration
+
+### 1. Database Choice and Rationale
+We selected **SQLite** as the database for the development and local testing phases of the AgriChat project, integrated using the **SQLAlchemy ORM**.
+
+**Why SQLite?**
+- **Zero Configuration**: SQLite is self-contained and file-based. It requires no external database server installation or configuration, making local setup instant and hassle-free for developer environments.
+- **Transactional Safety (ACID)**: Despite being file-based, it fully supports ACID transactions, ensuring structural reliability.
+- **Swappable ORM Layer**: By using SQLAlchemy as the Object-Relational Mapper, our schemas are defined as abstract Python classes. If production workloads require migrating to PostgreSQL (e.g., Supabase), we can easily transition by simply updating the `DATABASE_URL` connection string without changing a single line of business logic.
+
+---
+
+### 2. Schema and Data Model Design
+We designed a database schema with two primary entities to capture structural context:
+
+1. **User (Supervisors)**: Represents agricultural supervisors who manage, verify, and resolve advisories.
+2. **Advisory**: Represents localized crop queries submitted by farmers and the generated AI/fallback recommendations.
+
+#### Relationships
+- **One-to-Many**: A `User` (creator) can author or manage multiple `Advisory` records. An `Advisory` can optionally link back to a `User` via the foreign key `created_by_id`.
+
+#### Schema Diagram
+Below is the visual database schema diagram illustrating the tables, columns, and their relationship:
+
+![Database Schema Diagram](./public/schema_diagram.png)
+
+#### Code Implementation
+The database models are committed and defined in [models.py](file:///c:/Users/abc/OneDrive/Desktop/AgriChat/backend/app/models.py).
+
+---
+
+### 3. Set Up the Database
+Follow these steps to set up and run the database locally:
+
+1. **Set Environment Variable**:
+   Ensure you have a `.env` file in the `backend/` folder (copied from `.env.example`). It must define the `DATABASE_URL` variable:
+   ```env
+   DATABASE_URL=sqlite:///./agrichat.db
+   ```
+
+2. **Database Initialization**:
+   The database tables are automatically initialized on server startup using SQLAlchemy's metadata bind. When you run:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+   If `agrichat.db` does not exist, the server will create the database file and set up the `users` and `advisories` tables immediately.
+
+3. **Verify and Seed Database (Testing)**:
+   We have included an automated API verification script that clears the database, creates fresh tables, and seeds it with mock records to verify end-to-end CRUD operations. Run it using:
+   ```bash
+   python verify_api.py
+   ```
+
+---
+
 ## 🧩 Components
 
 | Component | Path | Description |

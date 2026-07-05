@@ -85,6 +85,44 @@ export default function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  useEffect(() => {
+    const fetchHistory = async () => {
+      const token = localStorage.getItem('agrichat_token');
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/advisories/", {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const historyMessages = [];
+          data.forEach(advisory => {
+            historyMessages.push({
+              role: 'user',
+              content: advisory.query,
+              timestamp: new Date(advisory.created_at)
+            });
+            historyMessages.push({
+              role: 'assistant',
+              content: advisory.advice,
+              timestamp: new Date(advisory.created_at)
+            });
+          });
+          if (historyMessages.length > 0) {
+            setMessages([INITIAL_MESSAGE, ...historyMessages]);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to fetch chat history from database:", err);
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
   const sendMessage = async () => {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
@@ -127,9 +165,15 @@ export default function Chat() {
           severity = "Low";
         }
 
+        const token = localStorage.getItem('agrichat_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const backendResponse = await fetch("http://127.0.0.1:8000/api/advisories/", {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({
             crop,
             query: trimmed,
@@ -220,7 +264,22 @@ export default function Chat() {
     }
   };
 
-  const clearChat = () => {
+  const clearChat = async () => {
+    const token = localStorage.getItem('agrichat_token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+      await fetch("http://127.0.0.1:8000/api/advisories/", {
+        method: 'DELETE',
+        headers
+      });
+    } catch (err) {
+      console.warn("Failed to delete chat history on backend:", err);
+    }
+
     setMessages([INITIAL_MESSAGE]);
     setError(null);
   };
@@ -233,8 +292,8 @@ export default function Chat() {
   ];
 
   return (
-    <div className="flex flex-col" style={{ minHeight: '100vh', paddingTop: '64px', background: 'var(--color-bg)' }}>
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-6 sm:px-10 py-6">
+    <div className="flex flex-col w-full items-center" style={{ minHeight: '100vh', paddingTop: '64px', background: 'var(--color-bg)' }}>
+      <div className="flex-1 flex flex-col max-w-4xl w-full px-6 sm:px-10 py-6">
         {/* Header */}
         <div className="relative flex flex-col items-center justify-center text-center mb-6 w-full gap-2">
           {/* Clear button (top right absolute) */}

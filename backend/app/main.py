@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.database import engine, Base
-from app.routers import advisories
+from app.routers import advisories, auth
 from app.config import settings
 
 # Initialize database tables on startup (SQLite)
@@ -85,6 +85,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 # Register/mount API routers
 app.include_router(advisories.router)
+app.include_router(auth.router)
 
 # Base health and info endpoint
 @app.get("/")

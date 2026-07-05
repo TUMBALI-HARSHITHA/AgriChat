@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sprout, Menu, X, MessageSquareText, User, Bell, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -14,7 +14,45 @@ const navLinks = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const checkUser = () => {
+      const stored = localStorage.getItem('agrichat_user');
+      if (stored) {
+        try {
+          setUser(JSON.parse(stored));
+        } catch (e) {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+    };
+
+    checkUser();
+    window.addEventListener('storage', checkUser);
+    return () => window.removeEventListener('storage', checkUser);
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem('agrichat_token');
+    localStorage.removeItem('agrichat_user');
+    setUser(null);
+    window.dispatchEvent(new Event('storage'));
+    navigate('/');
+  };
+
+  const logoutMobile = () => {
+    logout();
+    setOpen(false);
+  };
+
+  const links = user 
+    ? navLinks.filter(l => l.path !== '/login') 
+    : navLinks;
 
   return (
     <nav
@@ -36,7 +74,7 @@ export default function Navbar() {
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-6">
-          {navLinks.map(({ label, path }) => (
+          {links.map(({ label, path }) => (
             <Link
               key={path}
               to={path}
@@ -74,13 +112,27 @@ export default function Navbar() {
           >
             <MessageSquareText size={16} />
           </Link>
-          <Link
-            to="/login"
-            aria-label="Profile"
-            className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white hover:scale-105 transition-transform glow-green-sm"
-          >
-            <User size={16} />
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold text-green-300 bg-green-950/60 border border-green-800/50 px-2.5 py-1.5 rounded-xl">
+                👤 {user.name}
+              </span>
+              <button
+                onClick={logout}
+                className="px-3 py-1.5 rounded-lg border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/20 text-xs font-medium cursor-pointer transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              aria-label="Profile"
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white hover:scale-105 transition-transform glow-green-sm"
+            >
+              <User size={16} />
+            </Link>
+          )}
         </div>
 
         {/* Mobile controls */}
@@ -112,7 +164,7 @@ export default function Navbar() {
         ].join(' ')}
       >
         <div className="px-4 py-3 space-y-1 bg-[#0a0f0a]/95">
-          {navLinks.map(({ label, path }) => (
+          {links.map(({ label, path }) => (
             <Link
               key={path}
               to={path}
@@ -137,13 +189,22 @@ export default function Navbar() {
             >
               <MessageSquareText size={14} /> Chat
             </Link>
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="flex-1 py-2.5 rounded-lg border border-green-700/40 bg-green-900/20 text-green-300 text-sm font-medium flex items-center justify-center gap-2"
-            >
-              <User size={14} /> Profile
-            </Link>
+            {user ? (
+              <button
+                onClick={logoutMobile}
+                className="flex-1 py-2.5 rounded-lg border border-red-700/40 bg-red-950/20 text-red-400 text-sm font-medium flex items-center justify-center gap-2 cursor-pointer"
+              >
+                Sign Out
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setOpen(false)}
+                className="flex-1 py-2.5 rounded-lg border border-green-700/40 bg-green-900/20 text-green-300 text-sm font-medium flex items-center justify-center gap-2"
+              >
+                <User size={14} /> Profile
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -24,6 +24,55 @@ def test_api():
     assert r.status_code == 200, f"Expected 200, got {r.status_code}"
     assert r.json()["status"] == "healthy"
     
+    # --- Auth Tests ---
+    print("Testing POST /api/auth/register (standard registration)...")
+    register_payload = {
+        "email": "test_supervisor@agri.uk.gov.in",
+        "name": "Harshitha Tumbali",
+        "password": "securepassword123",
+        "role": "Supervisor"
+    }
+    r = client.post("/api/auth/register", json=register_payload)
+    assert r.status_code == 201, f"Expected 201, got {r.status_code}"
+    registered_user = r.json()
+    assert registered_user["email"] == "test_supervisor@agri.uk.gov.in"
+    assert registered_user["name"] == "Harshitha Tumbali"
+    assert "hashed_password" not in registered_user
+    
+    print("Testing POST /api/auth/register (duplicate email error)...")
+    r = client.post("/api/auth/register", json=register_payload)
+    assert r.status_code == 400, f"Expected 400, got {r.status_code}"
+    
+    print("Testing POST /api/auth/login (invalid login credentials)...")
+    invalid_login = {
+        "email": "test_supervisor@agri.uk.gov.in",
+        "password": "wrongpassword"
+    }
+    r = client.post("/api/auth/login", json=invalid_login)
+    assert r.status_code == 401, f"Expected 401, got {r.status_code}"
+    
+    print("Testing POST /api/auth/login (successful login)...")
+    login_payload = {
+        "email": "test_supervisor@agri.uk.gov.in",
+        "password": "securepassword123"
+    }
+    r = client.post("/api/auth/login", json=login_payload)
+    assert r.status_code == 200, f"Expected 200, got {r.status_code}"
+    login_data = r.json()
+    assert "token" in login_data
+    token = login_data["token"]
+    assert login_data["user"]["name"] == "Harshitha Tumbali"
+    
+    print("Testing GET /api/auth/me (authenticated user)...")
+    headers = {"Authorization": f"Bearer {token}"}
+    r = client.get("/api/auth/me", headers=headers)
+    assert r.status_code == 200, f"Expected 200, got {r.status_code}"
+    assert r.json()["email"] == "test_supervisor@agri.uk.gov.in"
+    
+    print("Testing GET /api/auth/me (unauthenticated/invalid token)...")
+    r = client.get("/api/auth/me", headers={"Authorization": "Bearer invalidtokenhere"})
+    assert r.status_code == 401, f"Expected 401, got {r.status_code}"
+    
     # 2. Get all advisories (initially empty)
     print("Testing GET /api/advisories/ (empty)...")
     r = client.get("/api/advisories/")

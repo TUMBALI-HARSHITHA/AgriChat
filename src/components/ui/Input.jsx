@@ -53,10 +53,12 @@ export default function Input({
           onChange={onChange}
           required={required}
           placeholder={placeholder}
+          style={{
+            paddingLeft: icon ? '2.75rem' : '1rem',
+            paddingRight: rightElement ? '2.75rem' : '1rem',
+          }}
           className={[
             'w-full py-3 rounded-xl bg-[#0a0f0a] border text-white text-sm placeholder-gray-700 outline-none transition-all',
-            icon ? 'pl-10' : 'pl-4',
-            rightElement ? 'pr-10' : 'pr-4',
             error ? 'border-red-500/50 focus:border-red-500' : 'border-green-900/40 focus:border-green-600/60 focus:ring-1 focus:ring-green-600/20',
             className
           ].join(' ')}

@@ -1,23 +1,115 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Sprout, Eye, EyeOff, Mail, Lock, ArrowRight, LogIn } from 'lucide-react';
-import { Button, Input } from '../components/ui';
+import { useNavigate } from 'react-router-dom';
+import { Sprout, Eye, EyeOff, Mail, Lock, ArrowRight, LogIn, User } from 'lucide-react';
+import { Button, Input, Modal } from '../components/ui';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [isRegister, setIsRegister] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const [form, setForm]         = useState({ email: '', password: '' });
+  const [form, setForm]         = useState({ name: '', email: '', password: '' });
   const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState('');
+  const [isForgotOpen, setIsForgotOpen] = useState(false);
+  const [resetForm, setResetForm] = useState({ email: '', name: '', new_password: '' });
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState('');
+  const [resetSuccess, setResetSuccess] = useState('');
+
+  const handleResetFormChange = e => setResetForm({ ...resetForm, [e.target.name]: e.target.value });
+
+  const handleResetSubmit = async e => {
+    e.preventDefault();
+    setResetLoading(true);
+    setResetError('');
+    setResetSuccess('');
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resetForm),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || 'Failed to reset password');
+      }
+
+      setResetSuccess('Password reset successfully! You can now log in with your new password.');
+      setResetForm({ email: '', name: '', new_password: '' });
+    } catch (err) {
+      setResetError(err.message || 'An error occurred');
+    } finally {
+      setResetLoading(false);
+    }
+  };
 
   const handle = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const submit = e => {
+  const toggleMode = e => {
+    e.preventDefault();
+    setIsRegister(!isRegister);
+    setForm({ name: '', email: '', password: '' });
+    setError('');
+  };
+
+  const submit = async e => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    setError('');
+    try {
+      if (isRegister) {
+        // 1. Call Register endpoint
+        const registerRes = await fetch('http://127.0.0.1:8000/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: form.email,
+            name: form.name,
+            password: form.password,
+            role: 'Supervisor'
+          }),
+        });
+
+        const registerData = await registerRes.json();
+        if (!registerRes.ok) {
+          throw new Error(registerData.detail || 'Registration failed');
+        }
+      }
+
+      // 2. Call Login endpoint (auto-login after registration)
+      const loginRes = await fetch('http://127.0.0.1:8000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
+
+      const loginData = await loginRes.json();
+      if (!loginRes.ok) {
+        throw new Error(loginData.detail || 'Login failed');
+      }
+
+      localStorage.setItem('agrichat_token', loginData.token);
+      localStorage.setItem('agrichat_user', JSON.stringify(loginData.user));
+
+      // Dispatch a storage event so Navbar updates immediately
+      window.dispatchEvent(new Event('storage'));
+
+      navigate('/chat');
+    } catch (err) {
+      setError(err.message || 'An error occurred');
+    } finally {
       setLoading(false);
-      alert('Login functionality coming soon! Connect your auth provider.');
-    }, 1200);
+    }
   };
 
   return (
@@ -36,16 +128,41 @@ export default function Login() {
         <div className="glass rounded-3xl p-6 sm:p-8 border border-green-900/30 glow-green-sm">
 
           {/* logo + heading */}
-          <div className="flex flex-col items-center text-center mb-8">
+          <div className="flex flex-col items-center text-center mb-6">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center mb-4 glow-green">
               <Sprout size={26} className="text-white" />
             </div>
-            <h1 className="text-2xl font-extrabold text-white">Welcome back</h1>
-            <p className="text-sm text-gray-500 mt-1">Sign in to your AgriChat account</p>
+            <h1 className="text-2xl font-extrabold text-white">
+              {isRegister ? 'Create Account' : 'Welcome back'}
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {isRegister ? 'Sign up for an AgriChat account' : 'Sign in to your AgriChat account'}
+            </p>
           </div>
+
+          {error && (
+            <div className="mb-6 p-3 bg-red-900/20 border border-red-500/30 text-red-400 text-xs rounded-xl text-center">
+              {error}
+            </div>
+          )}
 
           {/* form */}
           <form onSubmit={submit} className="flex flex-col gap-5">
+
+            {/* full name (only when signing up) */}
+            {isRegister && (
+              <Input
+                id="login-name"
+                type="text"
+                name="name"
+                label="Full Name"
+                value={form.name}
+                onChange={handle}
+                required
+                placeholder="Harshitha Tumbali"
+                icon={<User size={15} />}
+              />
+            )}
 
             {/* email */}
             <Input
@@ -83,12 +200,17 @@ export default function Login() {
               }
             />
 
-            {/* forgot */}
-            <div className="text-right -mt-2">
-              <a href="#" className="text-xs text-green-500 hover:text-green-300 transition-colors">
-                Forgot password?
-              </a>
-            </div>
+            {!isRegister && (
+              <div className="text-right -mt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotOpen(true)}
+                  className="text-xs text-green-500 hover:text-green-300 transition-colors cursor-pointer bg-transparent border-none outline-none"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
 
             {/* submit */}
             <Button
@@ -97,7 +219,7 @@ export default function Login() {
               isLoading={loading}
               className="w-full justify-center py-3 text-sm"
             >
-              <LogIn size={17} className="mr-1.5" /> Sign In
+              <LogIn size={17} className="mr-1.5" /> {isRegister ? 'Register' : 'Sign In'}
             </Button>
           </form>
 
@@ -118,8 +240,21 @@ export default function Login() {
           </Button>
 
           <p className="text-center text-xs text-gray-600 mt-5">
-            No account?{' '}
-            <a href="#" className="text-green-500 hover:text-green-300 transition-colors">Request access</a>
+            {isRegister ? (
+              <>
+                Already have an account?{' '}
+                <button onClick={toggleMode} className="text-green-500 hover:text-green-300 transition-colors cursor-pointer font-bold underline bg-transparent border-none outline-none">
+                  Sign In
+                </button>
+              </>
+            ) : (
+              <>
+                No account?{' '}
+                <button onClick={toggleMode} className="text-green-500 hover:text-green-300 transition-colors cursor-pointer font-bold underline bg-transparent border-none outline-none">
+                  Request access
+                </button>
+              </>
+            )}
           </p>
         </div>
 
@@ -127,6 +262,92 @@ export default function Login() {
           For Uttarakhand Agricultural Supervisors
         </p>
       </div>
+
+      {/* Forgot Password Modal */}
+      <Modal
+        isOpen={isForgotOpen}
+        onClose={() => {
+          setIsForgotOpen(false);
+          setResetError('');
+          setResetSuccess('');
+        }}
+        title="Reset Account Password"
+        footer={
+          <Button variant="ghost" onClick={() => {
+            setIsForgotOpen(false);
+            setResetError('');
+            setResetSuccess('');
+          }}>
+            Close
+          </Button>
+        }
+      >
+        <form onSubmit={handleResetSubmit} className="flex flex-col gap-4 text-left">
+          <p className="text-xs text-gray-400 leading-relaxed mb-1">
+            Please enter your registered email and full name to verify your identity and set a new password.
+          </p>
+
+          {resetError && (
+            <div className="p-3 bg-red-900/20 border border-red-500/30 text-red-400 text-xs rounded-xl text-center">
+              {resetError}
+            </div>
+          )}
+
+          {resetSuccess && (
+            <div className="p-3 bg-green-900/20 border border-green-500/30 text-green-400 text-xs rounded-xl text-center">
+              {resetSuccess}
+            </div>
+          )}
+
+          {/* Email */}
+          <Input
+            id="reset-email"
+            type="email"
+            name="email"
+            label="Email Address"
+            value={resetForm.email}
+            onChange={handleResetFormChange}
+            required
+            placeholder="supervisor@agri.uk.gov.in"
+            icon={<Mail size={15} />}
+          />
+
+          {/* Full Name */}
+          <Input
+            id="reset-name"
+            type="text"
+            name="name"
+            label="Full Name"
+            value={resetForm.name}
+            onChange={handleResetFormChange}
+            required
+            placeholder="Osman"
+            icon={<User size={15} />}
+          />
+
+          {/* New Password */}
+          <Input
+            id="reset-password"
+            type="password"
+            name="new_password"
+            label="New Password"
+            value={resetForm.new_password}
+            onChange={handleResetFormChange}
+            required
+            placeholder="••••••••"
+            icon={<Lock size={15} />}
+          />
+
+          <Button
+            id="reset-submit-btn"
+            type="submit"
+            isLoading={resetLoading}
+            className="w-full justify-center py-2.5 mt-2 text-sm"
+          >
+            Reset Password
+          </Button>
+        </form>
+      </Modal>
     </div>
   );
 }
