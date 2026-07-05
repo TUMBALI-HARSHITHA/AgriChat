@@ -196,7 +196,7 @@ export default function Dashboard() {
               <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : !isLoggedIn ? (
-            <div className="glass rounded-3xl p-8 border border-green-900/30 text-center w-full max-w-xl mx-auto shadow-xl">
+            <div className="glass rounded-3xl p-8 border border-green-900/30 text-center w-full max-w-xl mx-auto shadow-xl self-center">
               <p className="text-gray-400 text-sm mb-5">
                 You are not logged in. Please sign in or register to store and review your custom advisory dashboard.
               </p>
@@ -205,7 +205,7 @@ export default function Dashboard() {
               </Button>
             </div>
           ) : formattedRecentQueries.length === 0 ? (
-            <div className="glass rounded-3xl p-8 border border-green-900/30 text-center w-full max-w-xl mx-auto shadow-xl">
+            <div className="glass rounded-3xl p-8 border border-green-900/30 text-center w-full max-w-xl mx-auto shadow-xl self-center">
               <p className="text-gray-400 text-sm mb-5">
                 No crop queries recorded yet. Start a conversation with AgriChat to consult our expert agricultural AI!
               </p>
