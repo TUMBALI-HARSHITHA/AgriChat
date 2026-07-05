@@ -76,52 +76,49 @@ The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000). You
 ## 🗄️ Database Integration
 
 ### 1. Database Choice and Rationale
-We selected **SQLite** as the database for the development and local testing phases of the AgriChat project, integrated using the **SQLAlchemy ORM**.
+We selected **MongoDB Atlas** as the cloud database for the AgriChat project, integrated using the official **PyMongo** client.
 
-**Why SQLite?**
-- **Zero Configuration**: SQLite is self-contained and file-based. It requires no external database server installation or configuration, making local setup instant and hassle-free for developer environments.
-- **Transactional Safety (ACID)**: Despite being file-based, it fully supports ACID transactions, ensuring structural reliability.
-- **Swappable ORM Layer**: By using SQLAlchemy as the Object-Relational Mapper, our schemas are defined as abstract Python classes. If production workloads require migrating to PostgreSQL (e.g., Supabase), we can easily transition by simply updating the `DATABASE_URL` connection string without changing a single line of business logic.
+**Why MongoDB Atlas?**
+- **Cloud-Native Document Storage**: MongoDB Atlas is a fully managed cloud database, offering high availability, instant scalability, and zero local hardware dependency.
+- **Dynamic Schemas**: Document-based storage matches our high-dimensional agricultural advisory queries and responses perfectly without complex, rigid migrations.
+- **Robust Driver Ecosystem**: Communicates seamlessly using the official PyMongo driver.
 
 ---
 
 ### 2. Schema and Data Model Design
-We designed a database schema with two primary entities to capture structural context:
+We designed a schema with three collections to capture application context:
 
-1. **User (Supervisors)**: Represents agricultural supervisors who manage, verify, and resolve advisories.
-2. **Advisory**: Represents localized crop queries submitted by farmers and the generated AI/fallback recommendations.
+1. **users**: Represents registered agricultural supervisors or administrators.
+2. **advisories**: Represents localized crop queries submitted by farmers and the generated AI recommendations.
+3. **counters**: Stores auto-incrementing integer sequence state for `users` and `advisories` to maintain simple, sequential primary keys.
 
 #### Relationships
-- **One-to-Many**: A `User` (creator) can author or manage multiple `Advisory` records. An `Advisory` can optionally link back to a `User` via the foreign key `created_by_id`.
+- **Referential One-to-Many**: An advisory document optionally links back to the user who created it via the `created_by_id` field referencing a user's integer `id`.
 
 #### Schema Diagram
-Below is the visual database schema diagram illustrating the tables, columns, and their relationship:
+Below is the visual database schema diagram illustrating the collections, fields, types, and their relationship:
 
 ![Database Schema Diagram](./public/schema_diagram.png)
 
 #### Code Implementation
-The database models are committed and defined in [models.py](file:///c:/Users/abc/OneDrive/Desktop/AgriChat/backend/app/models.py).
+The database client configuration and CRUD operations are committed and defined in [database.py](file:///c:/Users/abc/OneDrive/Desktop/AgriChat/backend/app/database.py) and [crud.py](file:///c:/Users/abc/OneDrive/Desktop/AgriChat/backend/app/crud.py).
 
 ---
 
 ### 3. Set Up the Database
-Follow these steps to set up and run the database locally:
+Follow these steps to configure database connectivity:
 
 1. **Set Environment Variable**:
-   Ensure you have a `.env` file in the `backend/` folder (copied from `.env.example`). It must define the `DATABASE_URL` variable:
+   Ensure you have a `.env` file in the `backend/` folder (copied from `.env.example`). It must define the `MONGO_URI` connection string:
    ```env
-   DATABASE_URL=sqlite:///./agrichat.db
+   MONGO_URI=mongodb+srv://harshithatumbali2007_db_user:Harshi123@cluster0.tuk0ob0.mongodb.net/?appName=Cluster0
    ```
 
 2. **Database Initialization**:
-   The database tables are automatically initialized on server startup using SQLAlchemy's metadata bind. When you run:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-   If `agrichat.db` does not exist, the server will create the database file and set up the `users` and `advisories` tables immediately.
+   The client automatically opens a connection to the MongoDB cluster upon server startup. If collections or indexes do not exist, PyMongo initializes them dynamically on write.
 
 3. **Verify and Seed Database (Testing)**:
-   We have included an automated API verification script that clears the database, creates fresh tables, and seeds it with mock records to verify end-to-end CRUD operations. Run it using:
+   We have included an automated API verification script that clears the test collections, seeds fresh mock documents, and validates end-to-end CRUD operations. Run it using:
    ```bash
    python verify_api.py
    ```
