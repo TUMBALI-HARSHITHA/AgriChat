@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sprout, Menu, X, MessageSquareText, User, Bell, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { Button, Modal } from './ui';
+import { API_BASE_URL } from '../config';
 
 const navLinks = [
   { label: 'Home',      path: '/' },
@@ -44,8 +45,21 @@ export default function Navbar() {
     setIsConfirmOpen(true);
   };
 
-  const handleSignOutChoice = (permanent) => {
+  const handleSignOutChoice = async (permanent) => {
     if (permanent) {
+      const token = localStorage.getItem('agrichat_token');
+      if (token) {
+        try {
+          await fetch(`${API_BASE_URL}/api/auth/me`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        } catch (e) {
+          console.warn("Failed to delete user from database:", e);
+        }
+      }
       localStorage.removeItem('agrichat_token');
       localStorage.removeItem('agrichat_user');
       localStorage.removeItem('agrichat_remembered_email');

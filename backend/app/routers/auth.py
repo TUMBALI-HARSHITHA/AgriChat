@@ -173,3 +173,13 @@ def reset_password(data: PasswordReset, db = Depends(get_db)):
         {"$set": {"salt": salt, "hashed_password": hashed}}
     )
     return {"message": "Password reset successfully."}
+
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+def delete_current_user(current_user = Depends(get_current_user), db = Depends(get_db)):
+    """Delete the currently logged-in user and their advisories from the database."""
+    user_id = current_user["id"]
+    # Delete all advisories belonging to this user
+    db.advisories.delete_many({"created_by_id": user_id})
+    # Delete the user record
+    db.users.delete_one({"id": user_id})
+    return None
