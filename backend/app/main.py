@@ -5,12 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.database import engine, Base
 from app.routers import advisories, auth
 from app.config import settings
-
-# Initialize database tables on startup (SQLite)
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="AgriChat Advisory API",

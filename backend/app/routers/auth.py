@@ -1,12 +1,11 @@
 import hashlib
 import secrets
+from datetime import datetime, timezone
 import hmac
 import time
 import base64
 from fastapi import APIRouter, Depends, HTTPException, Header, status
-from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models import User
+from app.database import get_db, get_next_sequence_value
 from app.schemas import UserCreate, UserLogin, UserResponse, LoginResponse, PasswordReset
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
@@ -69,8 +68,8 @@ def verify_token(token: str) -> int | None:
 
 def get_current_user(
     authorization: str | None = Header(None, description="Bearer <token>"),
-    db: Session = Depends(get_db)
-) -> User:
+    db = Depends(get_db)
+):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,7 +84,7 @@ def get_current_user(
             detail="Invalid or expired token"
         )
         
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.users.find_one({"id": user_id})
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -96,10 +95,10 @@ def get_current_user(
 # --- API ENDPOINTS ---
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
+def register(user_data: UserCreate, db = Depends(get_db)):
     """Create a new supervisor user with a hashed password."""
     # Check if user already exists
-    existing = db.query(User).filter(User.email == user_data.email).first()
+    existing = db.users.find_one({"email": user_data.email})
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -109,22 +108,23 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     salt = generate_salt()
     hashed = get_password_hash(user_data.password, salt)
     
-    db_user = User(
-        email=user_data.email,
-        name=user_data.name,
-        hashed_password=hashed,
-        salt=salt,
-        role=user_data.role or "Supervisor"
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    next_id = get_next_sequence_value("users")
+    doc = {
+        "id": next_id,
+        "email": user_data.email,
+        "name": user_data.name,
+        "hashed_password": hashed,
+        "salt": salt,
+        "role": user_data.role or "Supervisor",
+        "created_at": datetime.now(timezone.utc)
+    }
+    db.users.insert_one(doc)
+    return doc
 
 @router.post("/login", response_model=LoginResponse)
-def login(login_data: UserLogin, db: Session = Depends(get_db)):
+def login(login_data: UserLogin, db = Depends(get_db)):
     """Authenticate email and password, and return a signed session token."""
-    user = db.query(User).filter(User.email == login_data.email).first()
+    user = db.users.find_one({"email": login_data.email})
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -132,14 +132,14 @@ def login(login_data: UserLogin, db: Session = Depends(get_db)):
         )
         
     # Verify password
-    hashed = get_password_hash(login_data.password, user.salt)
-    if not hmac.compare_digest(hashed, user.hashed_password):
+    hashed = get_password_hash(login_data.password, user["salt"])
+    if not hmac.compare_digest(hashed, user["hashed_password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
         )
         
-    token = generate_token(user.id)
+    token = generate_token(user["id"])
     return {
         "token": token,
         "token_type": "bearer",
@@ -147,27 +147,29 @@ def login(login_data: UserLogin, db: Session = Depends(get_db)):
     }
 
 @router.get("/me", response_model=UserResponse)
-def read_current_user(current_user: User = Depends(get_current_user)):
+def read_current_user(current_user = Depends(get_current_user)):
     """Retrieve the profile details of the currently logged-in user."""
     return current_user
 
 @router.post("/reset-password", status_code=status.HTTP_200_OK)
-def reset_password(data: PasswordReset, db: Session = Depends(get_db)):
+def reset_password(data: PasswordReset, db = Depends(get_db)):
     """Reset user password after matching official email and full name."""
-    user = db.query(User).filter(User.email == data.email).first()
+    user = db.users.find_one({"email": data.email})
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No account found with this email address."
         )
-    if user.name.lower() != data.name.lower():
+    if user["name"].lower() != data.name.lower():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="The name provided does not match the name on the account."
         )
     # Generate new salt and hash the new password
     salt = generate_salt()
-    user.salt = salt
-    user.hashed_password = get_password_hash(data.new_password, salt)
-    db.commit()
+    hashed = get_password_hash(data.new_password, salt)
+    db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {"salt": salt, "hashed_password": hashed}}
+    )
     return {"message": "Password reset successfully."}

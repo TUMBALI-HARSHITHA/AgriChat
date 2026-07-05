@@ -7,11 +7,12 @@ sys.path.append(backend_dir)
 
 from fastapi.testclient import TestClient
 from app.main import app
-from app.database import Base, engine
+from app.database import db
 
-# Recreate tables to ensure a clean testing environment
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+# Clear collections to ensure a clean testing environment
+db.users.delete_many({})
+db.advisories.delete_many({})
+db.counters.delete_many({})
 
 client = TestClient(app)
 

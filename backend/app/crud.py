@@ -1,9 +1,8 @@
+import re
 import requests
 from datetime import datetime, timezone
-from sqlalchemy.orm import Session
-from sqlalchemy import or_, func
 from app.config import settings
-from app.models import Advisory
+from app.database import get_next_sequence_value
 from app.schemas import AdvisoryCreate, AdvisoryUpdate, AdvisoryPatch
 
 SYSTEM_PROMPT = """You are AgriChat, an expert agricultural advisor specializing in Uttarakhand's mountain crops and farming practices. 
@@ -91,13 +90,11 @@ def generate_agricultural_advice(crop: str, query: str, region: str) -> str:
         print(f"Gemini API connection failed ({str(e)}). Using local mock fallback.")
         return get_mock_advice(crop, query, region)
 
-# Read single
-def get_advisory(db: Session, advisory_id: int):
-    return db.query(Advisory).filter(Advisory.id == advisory_id).first()
+def get_advisory(db, advisory_id: int):
+    return db.advisories.find_one({"id": advisory_id})
 
-# Read list with pagination and filtering
 def get_advisories(
-    db: Session, 
+    db, 
     skip: int = 0, 
     limit: int = 100,
     crop: str | None = None,
@@ -105,108 +102,113 @@ def get_advisories(
     severity: str | None = None,
     created_by_id: int | None = None
 ):
-    query = db.query(Advisory)
+    filter_query = {}
     if created_by_id is not None:
-        query = query.filter(Advisory.created_by_id == created_by_id)
+        filter_query["created_by_id"] = created_by_id
     else:
-        query = query.filter(Advisory.created_by_id.is_(None))
+        filter_query["created_by_id"] = None
         
     if crop:
-        query = query.filter(Advisory.crop.ilike(f"%{crop}%"))
+        filter_query["crop"] = {"$regex": re.escape(crop), "$options": "i"}
     if region:
-        query = query.filter(Advisory.region.ilike(f"%{region}%"))
+        filter_query["region"] = {"$regex": re.escape(region), "$options": "i"}
     if severity:
-        query = query.filter(Advisory.severity == severity)
-    
-    return query.offset(skip).limit(limit).all()
+        filter_query["severity"] = severity
+        
+    cursor = db.advisories.find(filter_query).skip(skip).limit(limit)
+    return list(cursor)
 
-# Search
-def search_advisories(db: Session, search_query: str, skip: int = 0, limit: int = 100):
-    search_pattern = f"%{search_query}%"
-    return db.query(Advisory).filter(
-        or_(
-            Advisory.crop.ilike(search_pattern),
-            Advisory.query.ilike(search_pattern),
-            Advisory.advice.ilike(search_pattern),
-            Advisory.region.ilike(search_pattern)
-        )
-    ).offset(skip).limit(limit).all()
+def search_advisories(db, search_query: str, skip: int = 0, limit: int = 100):
+    regex = {"$regex": re.escape(search_query), "$options": "i"}
+    filter_query = {
+        "$or": [
+            {"crop": regex},
+            {"query": regex},
+            {"advice": regex},
+            {"region": regex}
+        ]
+    }
+    cursor = db.advisories.find(filter_query).skip(skip).limit(limit)
+    return list(cursor)
 
-# Create
-def create_advisory(db: Session, advisory: AdvisoryCreate, created_by_id: int | None = None):
+def create_advisory(db, advisory: AdvisoryCreate, created_by_id: int | None = None):
     advice = advisory.advice
     if not advice or advice.strip() == "":
         advice = generate_agricultural_advice(advisory.crop, advisory.query, advisory.region)
         
-    db_advisory = Advisory(
-        crop=advisory.crop,
-        query=advisory.query,
-        advice=advice,
-        region=advisory.region,
-        severity=advisory.severity,
-        status=advisory.status,
-        created_by_id=created_by_id
-     )
-    db.add(db_advisory)
-    db.commit()
-    db.refresh(db_advisory)
-    return db_advisory
+    next_id = get_next_sequence_value("advisories")
+    now = datetime.now(timezone.utc)
+    
+    doc = {
+        "id": next_id,
+        "crop": advisory.crop,
+        "query": advisory.query,
+        "advice": advice,
+        "region": advisory.region,
+        "severity": advisory.severity,
+        "status": advisory.status,
+        "created_by_id": created_by_id,
+        "created_at": now,
+        "updated_at": now
+    }
+    
+    db.advisories.insert_one(doc)
+    return doc
 
-# Full update (PUT)
-def update_advisory(db: Session, advisory_id: int, advisory_update: AdvisoryUpdate):
+def update_advisory(db, advisory_id: int, advisory_update: AdvisoryUpdate):
     db_advisory = get_advisory(db, advisory_id)
     if not db_advisory:
         return None
+        
+    now = datetime.now(timezone.utc)
+    updates = {
+        "crop": advisory_update.crop,
+        "query": advisory_update.query,
+        "advice": advisory_update.advice,
+        "region": advisory_update.region,
+        "severity": advisory_update.severity,
+        "status": advisory_update.status,
+        "updated_at": now
+    }
     
-    db_advisory.crop = advisory_update.crop
-    db_advisory.query = advisory_update.query
-    db_advisory.advice = advisory_update.advice
-    db_advisory.region = advisory_update.region
-    db_advisory.severity = advisory_update.severity
-    db_advisory.status = advisory_update.status
-    db_advisory.updated_at = datetime.now(timezone.utc)
-    
-    db.commit()
-    db.refresh(db_advisory)
+    db.advisories.update_one({"id": advisory_id}, {"$set": updates})
+    db_advisory.update(updates)
     return db_advisory
 
-# Partial update (PATCH)
-def patch_advisory(db: Session, advisory_id: int, advisory_patch: AdvisoryPatch):
+def patch_advisory(db, advisory_id: int, advisory_patch: AdvisoryPatch):
     db_advisory = get_advisory(db, advisory_id)
     if not db_advisory:
         return None
-    
+        
     update_data = advisory_patch.model_dump(exclude_unset=True)
-    for key, value in update_data.items():
-        if value is not None:
-            setattr(db_advisory, key, value)
-            
-    db_advisory.updated_at = datetime.now(timezone.utc)
-    
-    db.commit()
-    db.refresh(db_advisory)
+    if not update_data:
+        return db_advisory
+        
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    db.advisories.update_one({"id": advisory_id}, {"$set": update_data})
+    db_advisory.update(update_data)
     return db_advisory
 
-# Delete
-def delete_advisory(db: Session, advisory_id: int):
+def delete_advisory(db, advisory_id: int):
     db_advisory = get_advisory(db, advisory_id)
     if not db_advisory:
         return None
-    db.delete(db_advisory)
-    db.commit()
+    db.advisories.delete_one({"id": advisory_id})
     return db_advisory
 
-# Stats aggregation
-def get_advisory_stats(db: Session):
-    total = db.query(Advisory).count()
+def get_advisory_stats(db):
+    total = db.advisories.count_documents({})
     
     def get_group_counts(field):
-        results = db.query(field, func.count(field)).group_by(field).all()
-        return {str(val): count for val, count in results if val is not None}
+        pipeline = [
+            {"$group": {"_id": f"${field}", "count": {"$sum": 1}}}
+        ]
+        results = db.advisories.aggregate(pipeline)
+        return {str(r["_id"]): r["count"] for r in results if r["_id"] is not None}
         
-    by_crop = get_group_counts(Advisory.crop)
-    by_region = get_group_counts(Advisory.region)
-    by_severity = get_group_counts(Advisory.severity)
+    by_crop = get_group_counts("crop")
+    by_region = get_group_counts("region")
+    by_severity = get_group_counts("severity")
     
     return {
         "total_count": total,

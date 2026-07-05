@@ -1,25 +1,29 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from pymongo import MongoClient
 from app.config import settings
 
-# SQLite connection args to allow multi-threaded access
-connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
-    connect_args = {"check_same_thread": False}
+db_name = "agrichat"
+mongo_uri = settings.MONGO_URI if settings.MONGO_URI else settings.DATABASE_URL
 
-engine = create_engine(
-    settings.DATABASE_URL,
-    connect_args=connect_args
-)
+# Establish MongoClient connection
+client = MongoClient(mongo_uri)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Retrieve the database
+# If database name is specified in the connection string path, default to it, otherwise use 'agrichat'
+try:
+    db = client.get_default_database(default_database=db_name)
+except Exception:
+    db = client[db_name]
 
-Base = declarative_base()
+# Auto-increment sequence generator function for MongoDB
+def get_next_sequence_value(sequence_name: str) -> int:
+    result = db.counters.find_one_and_update(
+        {"_id": sequence_name},
+        {"$inc": {"sequence_value": 1}},
+        upsert=True,
+        return_document=True
+    )
+    return result["sequence_value"]
 
 # DB Dependency injection helper
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    yield db

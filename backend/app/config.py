@@ -9,6 +9,7 @@ ENV_FILE = os.path.join(BASE_DIR, ".env")
 class Settings(BaseSettings):
     PORT: int = Field(default=8000, validation_alias="PORT")
     DATABASE_URL: str = Field(default="sqlite:///./agrichat.db", validation_alias="DATABASE_URL")
+    MONGO_URI: str | None = Field(default=None, validation_alias="MONGO_URI")
     GEMINI_API_KEY: str | None = Field(default=None, validation_alias="GEMINI_API_KEY")
 
     # Pydantic V2 Configuration Settings
