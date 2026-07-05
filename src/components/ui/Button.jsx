@@ -18,9 +18,10 @@ export default function Button({
   isLoading = false,
   disabled = false,
   className = '',
+  roundedClass = 'rounded-xl',
   ...rest
 }) {
-  const baseStyle = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyle = `inline-flex items-center justify-center font-semibold ${roundedClass} transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`;
   
   const variants = {
     primary: 'bg-gradient-to-br from-green-500 to-green-700 text-white hover:from-green-400 hover:to-green-600 hover:shadow-lg hover:shadow-green-900/20 active:scale-95',

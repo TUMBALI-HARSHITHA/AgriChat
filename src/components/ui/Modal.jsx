@@ -19,6 +19,7 @@ export default function Modal({
   children,
   footer,
   size = 'md',
+  roundedClass = 'rounded-3xl',
 }) {
   useEffect(() => {
     const handleEscape = (e) => {
@@ -53,13 +54,13 @@ export default function Modal({
       />
 
       {/* Modal Card */}
-      <div className={`relative z-10 w-full ${sizes[size]} glass border border-green-900/40 rounded-3xl overflow-hidden shadow-2xl animate-fadeInUp w-full`}>
+      <div className={`relative z-10 w-full ${sizes[size]} glass border border-green-900/40 ${roundedClass} overflow-hidden shadow-2xl animate-fadeInUp w-full`}>
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-green-900/20">
           <h3 className="text-base font-bold text-white leading-none">{title || 'Details'}</h3>
           <button 
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-300 transition-colors p-1 rounded-lg hover:bg-green-900/10 cursor-pointer"
+            className={`text-gray-500 hover:text-gray-300 transition-colors p-1 ${roundedClass === 'rounded-none' ? 'rounded-none' : 'rounded-lg'} hover:bg-green-900/10 cursor-pointer`}
             aria-label="Close modal"
           >
             <X size={18} />

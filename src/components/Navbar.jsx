@@ -245,6 +245,7 @@ export default function Navbar() {
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         title="Confirm Sign Out"
+        roundedClass="rounded-none"
       >
         <div className="space-y-4">
           <p className="text-gray-400 text-sm">
@@ -255,6 +256,7 @@ export default function Navbar() {
               variant="danger"
               onClick={() => handleSignOutChoice(true)}
               className="flex-grow w-full"
+              roundedClass="rounded-none"
             >
               Sign Out Permanently
             </Button>
@@ -262,6 +264,7 @@ export default function Navbar() {
               variant="secondary"
               onClick={() => handleSignOutChoice(false)}
               className="flex-grow w-full border border-green-800/40 text-green-300"
+              roundedClass="rounded-none"
             >
               Sign Out Temporarily
             </Button>
