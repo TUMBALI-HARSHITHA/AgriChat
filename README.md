@@ -109,10 +109,7 @@ The database client configuration and CRUD operations are committed and defined 
 Follow these steps to configure database connectivity:
 
 1. **Set Environment Variable**:
-   Ensure you have a `.env` file in the `backend/` folder (copied from `.env.example`). It must define the `MONGO_URI` connection string:
-   ```env
-   MONGO_URI=mongodb+srv://harshithatumbali2007_db_user:Harshi123@cluster0.tuk0ob0.mongodb.net/?appName=Cluster0
-   ```
+   Ensure you have a `.env` file in the `backend/` folder (copied from `.env.example`). It must define the `MONGO_URI` connection string.
 
 2. **Database Initialization**:
    The client automatically opens a connection to the MongoDB cluster upon server startup. If collections or indexes do not exist, PyMongo initializes them dynamically on write.
