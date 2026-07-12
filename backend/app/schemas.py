@@ -50,13 +50,13 @@ class AdvisoryStats(BaseModel):
     by_severity: Dict[str, int]
 
 class UserCreate(BaseModel):
-    email: str = Field(..., min_length=5, max_length=100)
+    email: str = Field(..., min_length=5, max_length=100, pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
     name: str = Field(..., min_length=2, max_length=100)
     password: str = Field(..., min_length=6)
     role: Optional[str] = Field(default="Supervisor")
 
 class UserLogin(BaseModel):
-    email: str = Field(..., min_length=5, max_length=100)
+    email: str = Field(..., min_length=5, max_length=100, pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
     password: str = Field(..., min_length=6)
 
 class UserResponse(BaseModel):
@@ -74,6 +74,6 @@ class LoginResponse(BaseModel):
     user: UserResponse
 
 class PasswordReset(BaseModel):
-    email: str = Field(..., min_length=5, max_length=100)
+    email: str = Field(..., min_length=5, max_length=100, pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
     name: str = Field(..., min_length=2, max_length=100)
     new_password: str = Field(..., min_length=6)

@@ -76,7 +76,7 @@ def test_api():
     
     # 2. Get all advisories (initially empty)
     print("Testing GET /api/advisories/ (empty)...")
-    r = client.get("/api/advisories/")
+    r = client.get("/api/advisories/", headers=headers)
     assert r.status_code == 200, f"Expected 200, got {r.status_code}"
     assert isinstance(r.json(), list)
     assert len(r.json()) == 0
@@ -91,7 +91,7 @@ def test_api():
         "severity": "Medium",
         "status": "Draft"
     }
-    r = client.post("/api/advisories/", json=payload)
+    r = client.post("/api/advisories/", json=payload, headers=headers)
     assert r.status_code == 201, f"Expected 201, got {r.status_code}"
     created = r.json()
     assert created["id"] is not None
@@ -108,7 +108,7 @@ def test_api():
         "severity": "High",
         "status": "Draft"
     }
-    r = client.post("/api/advisories/", json=payload_no_advice)
+    r = client.post("/api/advisories/", json=payload_no_advice, headers=headers)
     assert r.status_code == 201, f"Expected 201, got {r.status_code}"
     created_no_advice = r.json()
     assert created_no_advice["advice"] is not None
@@ -123,11 +123,11 @@ def test_api():
     
     # 6. GET List with query filters
     print("Testing GET /api/advisories/ (filtered)...")
-    r_crop = client.get("/api/advisories/?crop=potato")
+    r_crop = client.get("/api/advisories/?crop=potato", headers=headers)
     assert r_crop.status_code == 200
     assert len(r_crop.json()) == 1
     
-    r_region = client.get("/api/advisories/?region=Garhwal")
+    r_region = client.get("/api/advisories/?region=Garhwal", headers=headers)
     assert r_region.status_code == 200
     assert len(r_region.json()) == 1
     
@@ -159,7 +159,7 @@ def test_api():
         "severity": "High",
         "status": "Resolved"
     }
-    r = client.put(f"/api/advisories/{advisory_id}", json=update_payload)
+    r = client.put(f"/api/advisories/{advisory_id}", json=update_payload, headers=headers)
     assert r.status_code == 200, f"Expected 200, got {r.status_code}"
     updated = r.json()
     assert updated["advice"] == "Spray copper oxychloride fungicide immediately."
@@ -172,7 +172,7 @@ def test_api():
     patch_payload = {
         "severity": "Medium"
     }
-    r = client.patch(f"/api/advisories/{advisory_id}", json=patch_payload)
+    r = client.patch(f"/api/advisories/{advisory_id}", json=patch_payload, headers=headers)
     assert r.status_code == 200, f"Expected 200, got {r.status_code}"
     patched = r.json()
     assert patched["severity"] == "Medium"
@@ -196,7 +196,7 @@ def test_api():
         "severity": "Extreme",  # pattern violation (must be Low/Medium/High)
         "status": "Draft"
     }
-    r = client.post("/api/advisories/", json=invalid_payload)
+    r = client.post("/api/advisories/", json=invalid_payload, headers=headers)
     assert r.status_code == 422, f"Expected 422, got {r.status_code}"
     error_res = r.json()
     assert "error" in error_res
@@ -206,7 +206,7 @@ def test_api():
     
     # 13. DELETE Advisory
     print(f"Testing DELETE /api/advisories/{advisory_id} ...")
-    r = client.delete(f"/api/advisories/{advisory_id}")
+    r = client.delete(f"/api/advisories/{advisory_id}", headers=headers)
     assert r.status_code == 204, f"Expected 204, got {r.status_code}"
     
     # Verify it is deleted

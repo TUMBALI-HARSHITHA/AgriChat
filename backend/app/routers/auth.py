@@ -5,10 +5,15 @@ import hmac
 import time
 import base64
 from fastapi import APIRouter, Depends, HTTPException, Header, status
+from fastapi.responses import HTMLResponse, RedirectResponse
 from app.database import get_db, get_next_sequence_value
 from app.schemas import UserCreate, UserLogin, UserResponse, LoginResponse, PasswordReset
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
+from app.rate_limiter import RateLimiter
+login_limiter = RateLimiter(requests_limit=5, window_seconds=60)
+register_limiter = RateLimiter(requests_limit=5, window_seconds=60)
 
 SECRET_KEY = "agrichat_super_secret_key_change_me_in_production"
 
@@ -27,41 +32,65 @@ def get_password_hash(password: str, salt: str) -> str:
     )
     return key.hex()
 
+import json
+
+def base64url_encode(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).decode('utf-8').rstrip('=')
+
+def base64url_decode(data: str) -> bytes:
+    padding = '=' * (4 - (len(data) % 4))
+    return base64.urlsafe_b64decode(data + padding)
+
 def generate_token(user_id: int) -> str:
     # Token valid for 7 days
     expiry = int(time.time()) + (7 * 24 * 60 * 60)
-    message = f"{user_id}:{expiry}"
-    sig = hmac.new(
+    header = {"alg": "HS256", "typ": "JWT"}
+    payload = {"sub": user_id, "exp": expiry}
+    
+    header_json = json.dumps(header, separators=(',', ':')).encode('utf-8')
+    payload_json = json.dumps(payload, separators=(',', ':')).encode('utf-8')
+    
+    header_b64 = base64url_encode(header_json)
+    payload_b64 = base64url_encode(payload_json)
+    
+    signing_input = f"{header_b64}.{payload_b64}".encode('utf-8')
+    signature = hmac.new(
         SECRET_KEY.encode('utf-8'),
-        message.encode('utf-8'),
+        signing_input,
         hashlib.sha256
-    ).hexdigest()
-    raw_token = f"{message}:{sig}"
-    return base64.urlsafe_b64encode(raw_token.encode('utf-8')).decode('utf-8')
+    ).digest()
+    signature_b64 = base64url_encode(signature)
+    
+    return f"{header_b64}.{payload_b64}.{signature_b64}"
 
 def verify_token(token: str) -> int | None:
     try:
-        decoded = base64.urlsafe_b64decode(token.encode('utf-8')).decode('utf-8')
-        parts = decoded.split(":")
+        parts = token.split(".")
         if len(parts) != 3:
             return None
-        user_id_str, expiry_str, sig = parts
+        header_b64, payload_b64, signature_b64 = parts
         
-        # Check expiry
-        expiry = int(expiry_str)
-        if time.time() > expiry:
+        # Verify signature
+        signing_input = f"{header_b64}.{payload_b64}".encode('utf-8')
+        expected_signature = hmac.new(
+            SECRET_KEY.encode('utf-8'),
+            signing_input,
+            hashlib.sha256
+        ).digest()
+        expected_signature_b64 = base64url_encode(expected_signature)
+        
+        if not hmac.compare_digest(signature_b64, expected_signature_b64):
             return None
             
-        # Verify signature
-        message = f"{user_id_str}:{expiry_str}"
-        expected_sig = hmac.new(
-            SECRET_KEY.encode('utf-8'),
-            message.encode('utf-8'),
-            hashlib.sha256
-        ).hexdigest()
+        # Decode payload
+        payload_json = base64url_decode(payload_b64).decode('utf-8')
+        payload = json.loads(payload_json)
         
-        if hmac.compare_digest(sig, expected_sig):
-            return int(user_id_str)
+        # Check expiry
+        if time.time() > payload.get("exp", 0):
+            return None
+            
+        return payload.get("sub")
     except Exception:
         pass
     return None
@@ -94,7 +123,7 @@ def get_current_user(
 
 # --- API ENDPOINTS ---
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(register_limiter)])
 def register(user_data: UserCreate, db = Depends(get_db)):
     """Create a new supervisor user with a hashed password."""
     # Check if user already exists
@@ -121,7 +150,7 @@ def register(user_data: UserCreate, db = Depends(get_db)):
     db.users.insert_one(doc)
     return doc
 
-@router.post("/login", response_model=LoginResponse)
+@router.post("/login", response_model=LoginResponse, dependencies=[Depends(login_limiter)])
 def login(login_data: UserLogin, db = Depends(get_db)):
     """Authenticate email and password, and return a signed session token."""
     user = db.users.find_one({"email": login_data.email})
@@ -183,3 +212,223 @@ def delete_current_user(current_user = Depends(get_current_user), db = Depends(g
     # Delete the user record
     db.users.delete_one({"id": user_id})
     return None
+
+@router.get("/oauth/login/{provider}")
+def oauth_login(provider: str):
+    if provider not in ["google", "github"]:
+        raise HTTPException(status_code=400, detail="Unsupported OAuth provider")
+    # Redirect to the mock consent page
+    return RedirectResponse(url=f"/api/auth/oauth/consent/{provider}")
+
+@router.get("/oauth/consent/{provider}", response_class=HTMLResponse)
+def oauth_consent(provider: str):
+    if provider not in ["google", "github"]:
+        raise HTTPException(status_code=400, detail="Unsupported OAuth provider")
+    
+    provider_title = provider.capitalize()
+    accent_color = "#4285F4" if provider == "google" else "#24292e"
+    default_email = f"harshitha.{provider}@agri.uk.gov.in"
+    default_name = f"Harshitha {provider_title}"
+    
+    # Beautiful Google/GitHub style HTML consent screen matching the AgriChat theme
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Sign in with {provider_title} - AgriChat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{
+                margin: 0;
+                padding: 0;
+                background-color: #050805;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                color: #e2e8f0;
+            }}
+            .card {{
+                background: rgba(10, 15, 10, 0.8);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                border-radius: 24px;
+                padding: 40px;
+                max-width: 400px;
+                width: 100%;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 197, 94, 0.1);
+                text-align: center;
+                backdrop-filter: blur(12px);
+            }}
+            .logo-container {{
+                display: flex;
+                justify-content: center;
+                margin-bottom: 24px;
+                gap: 12px;
+                align-items: center;
+            }}
+            .logo {{
+                width: 48px;
+                height: 48px;
+                background: linear-gradient(135deg, #22c55e, #15803d);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: white;
+                box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+            }}
+            .provider-logo {{
+                width: 48px;
+                height: 48px;
+                background: {accent_color};
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: white;
+            }}
+            h1 {{
+                font-size: 22px;
+                font-weight: 800;
+                margin: 0 0 8px 0;
+            }}
+            p {{
+                font-size: 14px;
+                color: #8892b0;
+                margin: 0 0 24px 0;
+                line-height: 1.5;
+            }}
+            .form-group {{
+                text-align: left;
+                margin-bottom: 20px;
+            }}
+            label {{
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                color: #22c55e;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }}
+            input {{
+                width: 100%;
+                padding: 12px 16px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                border-radius: 12px;
+                color: white;
+                font-size: 14px;
+                box-sizing: border-box;
+                outline: none;
+                transition: border-color 0.2s;
+            }}
+            input:focus {{
+                border-color: #22c55e;
+            }}
+            .btn-allow {{
+                background: linear-gradient(135deg, #22c55e, #15803d);
+                color: white;
+                border: none;
+                padding: 14px;
+                width: 100%;
+                border-radius: 12px;
+                font-size: 15px;
+                font-weight: 700;
+                cursor: pointer;
+                box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+                transition: transform 0.1s, opacity 0.2s;
+            }}
+            .btn-allow:hover {{
+                opacity: 0.95;
+            }}
+            .btn-allow:active {{
+                transform: scale(0.98);
+            }}
+            .btn-cancel {{
+                background: transparent;
+                color: #8892b0;
+                border: none;
+                margin-top: 14px;
+                font-size: 14px;
+                cursor: pointer;
+                text-decoration: underline;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="logo-container">
+                <div class="logo">🌿</div>
+                <div style="font-size: 20px; color: #8892b0;">➜</div>
+                <div class="provider-logo">{"G" if provider == "google" else "Git"}</div>
+            </div>
+            <h1>Sign in with {provider_title}</h1>
+            <p>Authorize <strong>AgriChat</strong> to access your {provider_title} account information (name and email address).</p>
+            <form action="/api/auth/oauth/callback/{provider}" method="get">
+                <div class="form-group">
+                    <label for="email">OAuth Email Address</label>
+                    <input type="email" id="email" name="email" value="{default_email}" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">OAuth Full Name</label>
+                    <input type="text" id="name" name="name" value="{default_name}" required>
+                </div>
+                <button type="submit" class="btn-allow">Authorize & Sign In</button>
+            </form>
+            <button onclick="window.location.href='http://localhost:5173/login'" class="btn-cancel">Cancel</button>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
+
+@router.get("/oauth/callback/{provider}")
+def oauth_callback(provider: str, email: str, name: str, db = Depends(get_db)):
+    if provider not in ["google", "github"]:
+        raise HTTPException(status_code=400, detail="Unsupported OAuth provider")
+        
+    email = email.strip().lower()
+    
+    # Check if user already exists
+    user = db.users.find_one({"email": email})
+    if not user:
+        salt = generate_salt()
+        random_pass = secrets.token_hex(16)
+        hashed = get_password_hash(random_pass, salt)
+        
+        next_id = get_next_sequence_value("users")
+        user = {
+            "id": next_id,
+            "email": email,
+            "name": name,
+            "hashed_password": hashed,
+            "salt": salt,
+            "role": "Supervisor",
+            "created_at": datetime.now(timezone.utc)
+        }
+        db.users.insert_one(user)
+        
+    token = generate_token(user["id"])
+    
+    user_data = {
+        "id": user["id"],
+        "email": user["email"],
+        "name": user["name"],
+        "role": user["role"],
+        "created_at": user["created_at"].isoformat() if isinstance(user["created_at"], datetime) else str(user["created_at"])
+    }
+    
+    import urllib.parse
+    user_json = json.dumps(user_data)
+    redirect_url = f"http://localhost:5173/login?token={token}&user={urllib.parse.quote(user_json)}"
+    
+    return RedirectResponse(url=redirect_url)
+
+@router.post("/logout", status_code=status.HTTP_200_OK)
+def logout():
+    """Stateless logout confirmation endpoint."""
+    return {"message": "Logged out successfully from session."}

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status, Header
 from typing import List
 from app.database import get_db
-from app.routers.auth import verify_token
+from app.routers.auth import verify_token, get_current_user
 from app.schemas import (
     AdvisoryCreate, AdvisoryUpdate, AdvisoryPatch, 
     AdvisoryResponse, AdvisoryStats
@@ -31,10 +31,10 @@ def read_advisories(
     region: str | None = Query(None, description="Filter advisories by region name (case-insensitive)"),
     severity: str | None = Query(None, description="Filter advisories by severity (Low/Medium/High)"),
     db = Depends(get_db),
-    user = Depends(get_optional_current_user)
+    user = Depends(get_current_user)
 ):
     """Retrieve a list of agricultural advisories with pagination and optional filters."""
-    created_by_id = user["id"] if user else None
+    created_by_id = user["id"]
     return crud.get_advisories(db, skip=skip, limit=limit, crop=crop, region=region, severity=severity, created_by_id=created_by_id)
 
 @router.get("/search", response_model=List[AdvisoryResponse])
@@ -67,7 +67,7 @@ def read_advisory(advisory_id: int, db = Depends(get_db)):
 def create_advisory(
     advisory: AdvisoryCreate, 
     db = Depends(get_db),
-    user = Depends(get_optional_current_user)
+    user = Depends(get_current_user)
 ):
     """
     Create a new advisory.
@@ -75,7 +75,7 @@ def create_advisory(
     If `advice` is omitted or empty, the backend will auto-generate it using
     the Gemini API (if configured in environment variables) or fall back to draft placeholder advice.
     """
-    created_by_id = user["id"] if user else None
+    created_by_id = user["id"]
     return crud.create_advisory(db=db, advisory=advisory, created_by_id=created_by_id)
 
 @router.put("/{advisory_id}", response_model=AdvisoryResponse)
@@ -112,7 +112,7 @@ def patch_advisory(
 def delete_advisory(
     advisory_id: int, 
     db = Depends(get_db),
-    user = Depends(get_optional_current_user)
+    user = Depends(get_current_user)
 ):
     """Delete an existing advisory by its ID, enforcing ownership check."""
     db_advisory = crud.get_advisory(db, advisory_id=advisory_id)
@@ -123,7 +123,7 @@ def delete_advisory(
         )
     
     if db_advisory.get("created_by_id") is not None:
-        if not user or user["id"] != db_advisory.get("created_by_id"):
+        if user["id"] != db_advisory.get("created_by_id"):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You do not have permission to delete this advisory"
@@ -135,9 +135,9 @@ def delete_advisory(
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 def delete_my_advisories(
     db = Depends(get_db),
-    user = Depends(get_optional_current_user)
+    user = Depends(get_current_user)
 ):
-    """Delete all advisories belonging to the logged-in user, or all anonymous advisories."""
-    created_by_id = user["id"] if user else None
+    """Delete all advisories belonging to the logged-in user."""
+    created_by_id = user["id"]
     db.advisories.delete_many({"created_by_id": created_by_id})
     return None
